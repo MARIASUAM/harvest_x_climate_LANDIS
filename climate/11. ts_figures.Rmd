@@ -1,0 +1,1173 @@
+---
+title: "Climate series"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE, include = FALSE}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+
+di_inputs <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/inputs_climate/"
+di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
+```
+
+# Model MIROC5
+
+## Region 1
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_MIROC5_reg1")
+files <- files[c(1, 3, 4)]
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_Tavg_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual minimum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual maximum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_CO2.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(390, 470) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  # geom_smooth(method = "lm") +
+  stat_smooth(aes(color = scenario, fill = scenario), method = "loess") +
+  xlim(1950, 2100) +
+  ylim(300, 1000) +
+  ylab("Anual precipitation (mm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+```
+
+## Region 2
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_MIROC5_reg2")
+files <- files[c(1, 3, 4)]
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_Tavg_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 2") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 2") +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 2") +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  ggtitle("Region 2") +
+  theme(legend.position = "bottom")
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  ggtitle("Region 2") +
+  ylim(390, 470) +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  # geom_smooth(method = "lm") +
+  stat_smooth(aes(color = scenario, fill = scenario), method = "loess") +
+  xlim(1950, 2100) +
+  ylim(300, 1000) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  ggtitle("Region 2") +
+  theme(legend.position = "bottom")
+dev.off()
+```
+
+## Region 3
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_MIROC5_reg3")
+files <- files[c(1, 3, 4)]
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_Tavg_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual mean temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  theme(legend.position = "bottom")
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  ylim(390, 470) +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  # geom_smooth(method = "lm") +
+  stat_smooth(aes(color = scenario, fill = scenario), method = "loess") +
+  xlim(1950, 2100) +
+  ylim(300, 1000) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  ggtitle("Region 3") +
+  theme(legend.position = "bottom")
+dev.off()
+```
+
+## Region 4
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_MIROC5_reg4")
+files <- files[c(1, 3, 4)]
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_Tavg_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+dev.off()
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(-2, 25) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylim(390, 470) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+dev.off()
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  # geom_smooth(method = "lm") +
+  stat_smooth(aes(color = scenario, fill = scenario), method = "loess") +
+  xlim(1950, 2100) +
+  ylim(300, 1000) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  ggtitle("Region 4") +
+  theme(legend.position = "bottom")
+dev.off()
+```
+
+# Model ACCESS
+
+## Region 1
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg1.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Region 2
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg2.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Region 3
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg3.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Region 4
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg4.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec") %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Comparison among models
+
+## Scenario Current climate
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "current_*")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(Model = strsplit(files[i], split = "_")[[1]][2],
+         Region = strsplit(files[i], split = "_")[[1]][3],
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(Model, Region, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimun temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(Model, Region, Year, Prec) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  geom_smooth(method = "lm") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Scenario rcp4.5 climate
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "rcp45_*")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(Model = strsplit(files[i], split = "_")[[1]][2],
+         Region = strsplit(files[i], split = "_")[[1]][3],
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(Model, Region, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimun temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(Model, Region, Year, Prec) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  ggtitle("Region 1") +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Scenario rcp8.5 climate
+```{r, echo = FALSE}
+files <- list.files(di_inputs, pattern = "rcp85_*")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(Model = strsplit(files[i], split = "_")[[1]][2],
+         Region = strsplit(files[i], split = "_")[[1]][3],
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+anual_means <- series %>%
+  select(Model, Region, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(mean) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_means %>%
+  filter(variable == "Tavg_C",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual mean temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMin",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual minimun temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "TMax",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual maximum temperature (ºC)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "CO2",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual CO2 (ppm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_means %>%
+  filter(variable == "PAR",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  xlim(1950, 2100) +
+  ylab("Average anual PAR (umol/m2·s)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+anual_sums <- series %>%
+  select(Model, Region, Year, Prec) %>%
+  group_by(Model, Region, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("Model", "Region", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec",
+         Region == "reg1.txt") %>%
+  ggplot(aes(x = Year, y = value, color = Model)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  xlim(1950, 2100) +
+  ylab("Anual precipitation (mm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Historical period averages for region 1
+```{r}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg1.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+hist_mean <- series %>%
+  filter(Year >= 1950,
+         Year <= 2005) %>%
+  select(-scenario, -Year) %>%
+  group_by(Month) %>%
+  summarise_all(mean)
+
+# jpeg(file = "/Users/maria.suarez.munoz/Downloads/temperature_plot", width=6, height=4, units="in", res=300)
+ggplot(hist_mean, aes(x = Month)) +
+  geom_line(aes(y = TMin, colour = "TMin")) +
+  geom_point(size = 0.4, aes(y = TMin, colour = "TMin")) +
+  scale_colour_manual("", values = c("TMax" = "red", "TMin" = "blue")) +
+  scale_x_continuous("Time (months)", breaks = seq(1, 12, by = 1)) +
+  scale_y_continuous("Temperature (ºC)") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+# dev.off()
+
+# jpeg(file = "/Users/maria.suarez.munoz/Downloads/precipitation_plot", width=6, height=4, units="in", res=300)
+ggplot(hist_mean, aes(x = Month, y = Prec)) +
+  geom_area(aes(y = Prec / 4), color="blue", fill="blue", alpha = 0.5) +
+  geom_line(aes(y = Tavg_C, colour = "Tavg_C")) +
+  geom_point(size = 0.4, aes(y = Tavg_C, colour = "Tavg_C")) +
+  scale_x_continuous("Time (months)", expand = c(0, 0), breaks = seq(1, 12, by = 1)) +
+  scale_y_continuous(name = "Average temperature (ºC)", expand = c(0, 0), sec.axis = sec_axis(trans=~.*4, name="Precipitation (mm)")) +
+  theme_classic() +
+  theme(legend.position = "none")
+# dev.off()
+```
+
+## Seasonal precipitation variability for region 1
+```{r}
+files <- list.files(di_inputs, pattern = "*_ACCESS_reg1.txt")
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+series$season[series$Month == 1 | series$Month == 2 | series$Month == 3] <- 1 # "1_JFM"
+series$season[series$Month == 4 | series$Month == 5 | series$Month == 6] <- 2 # "2_AMJn"
+series$season[series$Month == 7 | series$Month == 8 | series$Month == 9] <- 3 # "3_JlAS"
+series$season[series$Month == 10 | series$Month == 11 | series$Month == 12] <- 4 # "4_OND"
+
+seasonal_sums <- series %>%
+  filter(Year >= 2080) %>%
+  select(scenario, season, Prec) %>%
+  melt(id.vars = c("scenario", "season"))
+
+winter <- seasonal_sums %>% filter(season == "1")
+boxplot(value ~ scenario, data = winter, main = "Jan-Feb-Mar total precipitation")
+
+spring <- seasonal_sums %>% filter(season == "2")
+boxplot(value ~ scenario, data = spring, main = "Apr-May-Jun total precipitation")
+
+summer <- seasonal_sums %>% filter(season == "3")
+boxplot(value ~ scenario, data = summer, main = "Jul-Aug-Sep total precipitation")
+
+fall <- seasonal_sums %>% filter(season == "4")
+boxplot(value ~ scenario, data = fall, main = "Oct-Nov-Dec total precipitation")
+```
+
+## Series inspection
+```{r}
+files <- list.files(di_inputs, pattern = "*_MIROC5_reg1")
+files <- files[c(1, 2)]
+series <- data.frame()
+for(i in 1:length(files)) {
+  temp <- read.table(paste(di_inputs, files[i], sep = ""), sep = " ", header = TRUE) %>%
+  mutate(scenario = strsplit(files[i], split = "_")[[1]][1], 
+         Tavg_C = (TMin + TMax)/2)
+  series <- rbind(series, temp)
+}
+
+df <- series %>%
+  filter(Year > 2060 & Year < 2070) %>%
+  mutate(date = as.Date(paste(Year, Month, "01", sep = "/"), format = "%Y/%m/%d"))
+
+ggplot(df, aes(x = Month, y = Prec)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(Year ~ scenario) +
+  scale_x_discrete()
+
+anual_sums <- series %>%
+  select(scenario, Year, Prec) %>%
+  group_by(scenario, Year) %>%
+  summarise_all(sum) %>%
+  melt(id.vars = c("scenario", "Year"))
+
+anual_sums %>%
+  filter(variable == "Prec",
+         Year > 2060 & Year < 2070) %>%
+  ggplot(aes(x = Year, y = value, color = scenario)) +
+  geom_line() +
+  geom_smooth(method = "lm") +
+  # xlim(1950, 2100) +
+  ylim(300, 1000) +
+  ylab("Anual precipitation (mm)") +
+  ggtitle("Region 1") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+series$season[series$Month == 1 | series$Month == 2 | series$Month == 3] <- 1 # "1_JFM"
+series$season[series$Month == 4 | series$Month == 5 | series$Month == 6] <- 2 # "2_AMJn"
+series$season[series$Month == 7 | series$Month == 8 | series$Month == 9] <- 3 # "3_JlAS"
+series$season[series$Month == 10 | series$Month == 11 | series$Month == 12] <- 4 # "4_OND"
+
+seasonal_sums <- series %>%
+  filter(Year >= 2060 & Year <= 2065) %>%
+  select(scenario, season, Prec) %>%
+  melt(id.vars = c("scenario", "season"))
+
+winter <- seasonal_sums %>% filter(season == "1")
+boxplot(value ~ scenario, data = winter, main = "Jan-Feb-Mar total precipitation")
+
+spring <- seasonal_sums %>% filter(season == "2")
+boxplot(value ~ scenario, data = spring, main = "Apr-May-Jun total precipitation")
+
+summer <- seasonal_sums %>% filter(season == "3")
+boxplot(value ~ scenario, data = summer, main = "Jul-Aug-Sep total precipitation")
+
+fall <- seasonal_sums %>% filter(season == "4")
+boxplot(value ~ scenario, data = fall, main = "Oct-Nov-Dec total precipitation")
+```
+

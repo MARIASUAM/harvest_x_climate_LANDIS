@@ -1,0 +1,80 @@
+---
+title: "Explore data from Plan de Aprovechamientos"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE}
+
+library(dplyr)
+library(ggplot2)
+
+di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/"
+PAA <- list.files(di, pattern = "*Sheet0.csv")
+
+plan <- data.frame()
+for (i in 1:length(PAA)) {
+  temp <- read.table(paste(di, PAA[i], sep = ""), sep = ";", header = TRUE) %>%
+    select(Código.Monte, Monte, Municipio, 
+           Clase, Unidad, Cant..planeada, Superficie)
+  plan <- rbind(plan, temp)
+}
+
+# plan <- read.csv(paste(di, "Plan_Anual_Aprovechamientos_20210329_JavierCano_Sheet0.csv", sep = ""), sep = ";")
+
+levels(plan$Clase)
+plan$Cant..planeada <- as.numeric(plan$Cant..planeada)
+plan$Superficie <- as.numeric(plan$Superficie)
+```
+
+# Biomasa extraída
+```{r, echo = FALSE}
+bio_aprov <- plan %>%
+  filter(Clase == "Biomasa",
+         Unidad == "(Tm)") %>%
+  mutate(biomasa_Tm_ha = Cant..planeada / Superficie)
+summary(bio_aprov$biomasa_Tm_ha)
+ggplot(bio_aprov, aes(x = Superficie, y = Cant..planeada)) +
+  geom_point()
+hist(bio_aprov$biomasa_Tm_ha)
+plot(bio_aprov$biomasa_Tm_ha)
+summary(bio_aprov$biomasa_Tm_ha)
+```
+
+# Coníferas tratadas
+```{r, echo = FALSE}
+coni_aprov <- plan %>%
+  filter(Clase == "Coníferas",
+         Unidad == "(m3)") %>%
+  mutate(coniferas_m3_ha = Cant..planeada / Superficie)
+summary(coni_aprov$coniferas_m3_ha)
+ggplot(coni_aprov, aes(x = Superficie, y = Cant..planeada)) +
+  geom_point()
+hist(coni_aprov$coniferas_m3_ha)
+plot(coni_aprov$coniferas_m3_ha)
+```
+
+# Leñas de coníferas
+```{r, echo = FALSE}
+lenas_aprov <- plan %>%
+  filter(Clase == "Leñas de coníferas",
+         Unidad == "(Kg)") %>%
+  mutate(lenas_kg_ha = Cant..planeada / Superficie)
+summary(lenas_aprov$lenas_kg_ha)
+ggplot(lenas_aprov, aes(x = Superficie, y = Cant..planeada)) +
+  geom_point()
+hist(lenas_aprov$lenas_kg_ha)
+plot(lenas_aprov$lenas_kg_ha)
+```
+
+```{r, echo = FALSE}
+# Superficie tratada
+sup <- plan %>%
+  filter(Clase == "Biomasa" | Clase == "Coníferas" | 
+           Clase == "Leñas de coníferas" | Clase == "Otras leñas") %>%
+  select(Clase, Superficie) %>%
+  group_by(Clase) %>%
+  summarise(total_sup = sum(Superficie))
+```
+

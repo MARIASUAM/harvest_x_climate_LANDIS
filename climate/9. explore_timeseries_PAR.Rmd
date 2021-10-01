@@ -1,0 +1,157 @@
+---
+title: "Explore PAR timeseries"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(dplyr)
+library(lubridate)
+library(reshape)
+library(ggplot2)
+
+di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/indata_generation/output_files/ecoregions/climate/"
+```
+
+### PAR ### 
+```{r, echo = FALSE}
+# Load time series
+par <- read.csv(paste(di, "PAR_timeseries.csv", sep = ""), sep = ",") %>%
+    mutate(date = as.Date(paste(Year, Month, "15", sep = "-"), tryFormats = c("%Y-%m-%d"))) %>%
+  dplyr::select(date, Year, Month, PAR_reg1, PAR_reg2, PAR_reg3, PAR_reg4)
+
+# Fetch data
+tidy_data <- par %>%
+  dplyr::select(date, PAR_reg1, PAR_reg2, PAR_reg3, PAR_reg4) %>%
+  melt(id.vars=c("date"))
+
+# Plots
+tidy_data %>%
+  filter(date > "2090-01-15") %>%
+  ggplot(aes(x = date, y = value)) +
+  geom_point(size = 0.1) +
+  geom_line() +
+  facet_grid(variable ~ . , scales="free_y") +
+  labs(x = "Year", y = "Monthly PAR (umol/m2/s)") +
+  ggtitle("Monthly PAR - last decade") +
+  ylim(0, 700) +
+  theme_minimal()
+```
+
+```{r, echo = FALSE}
+# Check year intravariability - Full period
+month_mean <- par %>%
+  select(Month, PAR_reg1, PAR_reg2, PAR_reg3, PAR_reg4) %>%
+  group_by(Month) %>%
+  summarise(PAR_reg1_monthmean_mean = mean(PAR_reg1),
+            PAR_reg2_monthmean_mean = mean(PAR_reg2),
+            PAR_reg3_monthmean_mean = mean(PAR_reg3),
+            PAR_reg4_monthmean_mean = mean(PAR_reg4),
+            PAR_reg1_monthmean_sd = sd(PAR_reg1),
+            PAR_reg2_monthmean_sd = sd(PAR_reg2),
+            PAR_reg3_monthmean_sd = sd(PAR_reg3),
+            PAR_reg4_monthmean_sd = sd(PAR_reg4))
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg1_monthmean_mean - PAR_reg1_monthmean_sd, 
+                  ymax = PAR_reg1_monthmean_mean + PAR_reg1_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg1_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg1_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 1 - Full period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg2_monthmean_mean - PAR_reg2_monthmean_sd, 
+                  ymax = PAR_reg2_monthmean_mean + PAR_reg2_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg2_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg2_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 2 - Full period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg3_monthmean_mean - PAR_reg3_monthmean_sd, 
+                  ymax = PAR_reg3_monthmean_mean + PAR_reg3_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg3_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg3_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 3 - Full period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg4_monthmean_mean - PAR_reg4_monthmean_sd, 
+                  ymax = PAR_reg4_monthmean_mean + PAR_reg4_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg4_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg4_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 4 - Full period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+# Check year intravariability - Last decades
+month_mean <- par %>%
+  filter(Year >= 2080) %>%
+  select(Month, PAR_reg1, PAR_reg2, PAR_reg3, PAR_reg4) %>%
+  group_by(Month) %>%
+  summarise(PAR_reg1_monthmean_mean = mean(PAR_reg1),
+            PAR_reg2_monthmean_mean = mean(PAR_reg2),
+            PAR_reg3_monthmean_mean = mean(PAR_reg3),
+            PAR_reg4_monthmean_mean = mean(PAR_reg4),
+            PAR_reg1_monthmean_sd = sd(PAR_reg1),
+            PAR_reg2_monthmean_sd = sd(PAR_reg2),
+            PAR_reg3_monthmean_sd = sd(PAR_reg3),
+            PAR_reg4_monthmean_sd = sd(PAR_reg4))
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg1_monthmean_mean - PAR_reg1_monthmean_sd, 
+                  ymax = PAR_reg1_monthmean_mean + PAR_reg1_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg1_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg1_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 1 - 2080-2100 periods") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg2_monthmean_mean - PAR_reg2_monthmean_sd, 
+                  ymax = PAR_reg2_monthmean_mean + PAR_reg2_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg2_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg2_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 2 - 2080-2100 period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg3_monthmean_mean - PAR_reg3_monthmean_sd, 
+                  ymax = PAR_reg3_monthmean_mean + PAR_reg3_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg3_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg3_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 3 - 2080-2100 period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = PAR_reg4_monthmean_mean - PAR_reg4_monthmean_sd, 
+                  ymax = PAR_reg4_monthmean_mean + PAR_reg4_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = PAR_reg4_monthmean_mean)) +
+  geom_point(aes(y = PAR_reg4_monthmean_mean), size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(0, 700) +
+  ggtitle("Region 4 - 2080-2100 period") +
+  ylab("mean +- sd PAR (umol/m2/s)")
+```

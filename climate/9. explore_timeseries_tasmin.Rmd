@@ -1,0 +1,250 @@
+---
+title: "Explore minimum temperature timeseries"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(dplyr)
+library(lubridate)
+library(reshape)
+library(ggplot2)
+
+di <- "/Volumes/Data/Climatic_Data/EnviDat/envicloud/chelsa/chelsa_V1/climregions_tables/"
+```
+
+### MINIMUM TEMPERATURE ### 
+```{r, echo = FALSE}
+# Load time series
+files <- list.files(di, pattern = "*_tasmin_*")
+all_data <- data.frame()
+for (i in 1:length(files)) {
+  name <- files[i]
+  model <- strsplit(name, split = "_")[[1]][1]
+  period <- strsplit(name, split = "_")[[1]][3]
+  temp <- read.csv(paste(di, files[i], sep = ""), sep = " ") %>%
+    mutate(Model = model,
+           Period = period,
+           date = as.Date(paste(Year, Month, "15", sep = "-"), tryFormats = c("%Y-%m-%d")),
+           Tmin_reg1_C = tmin_region_1 - 273.15,
+           Tmin_reg2_C = tmin_region_2 - 273.15,
+           Tmin_reg3_C = tmin_region_3 - 273.15,
+           Tmin_reg4_C = tmin_region_4 - 273.15) %>%
+    dplyr::select(date, Year, Month, Model, Period, Tmin_reg1_C, Tmin_reg2_C, Tmin_reg3_C, Tmin_reg4_C)
+
+  all_data <- rbind(all_data, temp)
+}
+
+# Fetch data
+tidy_data <- all_data %>%
+  dplyr::select(date, Model, Period, Tmin_reg1_C, Tmin_reg2_C, Tmin_reg3_C, Tmin_reg4_C) %>%
+  melt(id.vars=c("date", "Period", "Model"))
+
+# Subsets
+ACCESS_rcp45 <- tidy_data %>%
+  filter(Model == "ACCESS1-3",
+         Period == "historical" | Period == "rcp45")
+
+ACCESS_rcp85 <- tidy_data %>%
+  filter(Model == "ACCESS1-3",
+         Period == "historical" | Period == "rcp85")
+
+CESM1_rcp45 <- tidy_data %>%
+  filter(Model == "CESM1-BGC",
+         Period == "historical" | Period == "rcp45")
+
+CESM1_rcp85 <- tidy_data %>%
+  filter(Model == "CESM1-BGC",
+         Period == "historical" | Period == "rcp85")
+
+CMCC_rcp45 <- tidy_data %>%
+  filter(Model == "CMCC-CM",
+         Period == "historical" | Period == "rcp45")
+
+CMCC_rcp85 <- tidy_data %>%
+  filter(Model == "CMCC-CM",
+         Period == "historical" | Period == "rcp85")
+
+MIROC5_rcp45 <- tidy_data %>%
+  filter(Model == "MIROC5",
+         Period == "historical" | Period == "rcp45")
+
+MIROC5_rcp85 <- tidy_data %>%
+  filter(Model == "MIROC5",
+         Period == "historical" | Period == "rcp85")
+
+# Plots
+tidy_data %>%
+  filter(variable == "Tmin_reg1_C",
+         date > "2090-01-15") %>%
+  ggplot(aes(x = date, y = value)) +
+  geom_point(size = 0.1) +
+  geom_line() +
+  facet_grid(Model ~ Period , scales="free_y") +
+  labs(x = "Year", y = "Monthly Tmin (ºC)") +
+  ggtitle("Region 1") +
+  ylim(-10, 30) +
+  theme_minimal()
+
+tidy_data %>%
+  filter(variable == "Tmin_reg2_C",
+         date > "2090-01-15") %>%
+  ggplot(aes(x = date, y = value)) +
+  geom_point(size = 0.1) +
+  geom_line() +
+  facet_grid(Model ~ Period , scales="free_y") +
+  labs(x = "Year", y = "Monthly Tmin (ºC)") +
+  ggtitle("Region 2") +
+  ylim(-10, 30) +
+  theme_minimal()
+
+tidy_data %>%
+  filter(variable == "Tmin_reg3_C",
+         date > "2090-01-15") %>%
+  ggplot(aes(x = date, y = value)) +
+  geom_point(size = 0.1) +
+  geom_line() +
+  facet_grid(Model ~ Period , scales="free_y") +
+  labs(x = "Year", y = "Monthly Tmin (ºC)") +
+  ggtitle("Region 3") +
+  ylim(-10, 30) +
+  theme_minimal()
+
+tidy_data %>%
+  filter(variable == "Tmin_reg4_C",
+         date > "2090-01-15") %>%
+  ggplot(aes(x = date, y = value)) +
+  geom_point(size = 0.1) +
+  geom_line() +
+  facet_grid(Model ~ Period , scales="free_y") +
+  labs(x = "Year", y = "Monthly Tmin (ºC)") +
+  ggtitle("Region 4") +
+  ylim(-10, 30) +
+  theme_minimal()
+```
+
+```{r, echo = FALSE}
+# Check year intravariability - Full period
+month_mean <- all_data %>%
+  select(Month, Model, Period, Tmin_reg1_C, Tmin_reg2_C, Tmin_reg3_C, Tmin_reg4_C) %>%
+  group_by(Month, Model, Period) %>%
+  summarise(Tmin_reg1_monthmean_mean = mean(Tmin_reg1_C),
+            Tmin_reg2_monthmean_mean = mean(Tmin_reg2_C),
+            Tmin_reg3_monthmean_mean = mean(Tmin_reg3_C),
+            Tmin_reg4_monthmean_mean = mean(Tmin_reg4_C),
+            Tmin_reg1_monthmean_sd = sd(Tmin_reg1_C),
+            Tmin_reg2_monthmean_sd = sd(Tmin_reg2_C),
+            Tmin_reg3_monthmean_sd = sd(Tmin_reg3_C),
+            Tmin_reg4_monthmean_sd = sd(Tmin_reg4_C))
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg1_monthmean_mean - Tmin_reg1_monthmean_sd, 
+                  ymax = Tmin_reg1_monthmean_mean + Tmin_reg1_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg1_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg1_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 1 - Full period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg2_monthmean_mean - Tmin_reg2_monthmean_sd, 
+                  ymax = Tmin_reg2_monthmean_mean + Tmin_reg2_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg2_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg2_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 2 - Full period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg3_monthmean_mean - Tmin_reg3_monthmean_sd, 
+                  ymax = Tmin_reg3_monthmean_mean + Tmin_reg3_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg3_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg3_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 3 - Full period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg4_monthmean_mean - Tmin_reg4_monthmean_sd, 
+                  ymax = Tmin_reg4_monthmean_mean + Tmin_reg4_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg4_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg4_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 4 - Full period") +
+  ylab("mean +- sd")
+
+# Check year intravariability - Last decades
+month_mean <- all_data %>%
+  filter(Year >= 2080) %>%
+  select(Month, Model, Period, Tmin_reg1_C, Tmin_reg2_C, Tmin_reg3_C, Tmin_reg4_C) %>%
+  group_by(Month, Model, Period) %>%
+  summarise(Tmin_reg1_monthmean_mean = mean(Tmin_reg1_C),
+            Tmin_reg2_monthmean_mean = mean(Tmin_reg2_C),
+            Tmin_reg3_monthmean_mean = mean(Tmin_reg3_C),
+            Tmin_reg4_monthmean_mean = mean(Tmin_reg4_C),
+            Tmin_reg1_monthmean_sd = sd(Tmin_reg1_C),
+            Tmin_reg2_monthmean_sd = sd(Tmin_reg2_C),
+            Tmin_reg3_monthmean_sd = sd(Tmin_reg3_C),
+            Tmin_reg4_monthmean_sd = sd(Tmin_reg4_C))
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg1_monthmean_mean - Tmin_reg1_monthmean_sd, 
+                  ymax = Tmin_reg1_monthmean_mean + Tmin_reg1_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg1_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg1_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 1 - 2080-2100 period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg2_monthmean_mean - Tmin_reg2_monthmean_sd, 
+                  ymax = Tmin_reg2_monthmean_mean + Tmin_reg2_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg2_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg2_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 2 - 2080-2100 period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg3_monthmean_mean - Tmin_reg3_monthmean_sd, 
+                  ymax = Tmin_reg3_monthmean_mean + Tmin_reg3_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg3_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg3_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 3 - 2080-2100 period") +
+  ylab("mean +- sd")
+
+ggplot(data = month_mean, aes(x = Month)) +
+  geom_ribbon(aes(ymin = Tmin_reg4_monthmean_mean - Tmin_reg4_monthmean_sd, 
+                  ymax = Tmin_reg4_monthmean_mean + Tmin_reg4_monthmean_sd), fill = "grey70") +
+  geom_line(aes(y = Tmin_reg4_monthmean_mean)) +
+  geom_point(aes(y = Tmin_reg4_monthmean_mean), size = 0.1) +
+  facet_grid(Model ~ Period) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ylim(-10, 25) +
+  ggtitle("Region 4 - 2080-2100 period") +
+  ylab("mean +- sd")
+```

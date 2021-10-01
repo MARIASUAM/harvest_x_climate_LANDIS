@@ -1,0 +1,173 @@
+---
+title: "Compare observations and modelled data - MINIMUM TEMPERATURE"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(raster)
+library(dplyr)
+library(reshape)
+library(tidyverse)
+library(lubridate)
+
+di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/climate/"
+folder_harddisk <- "/Volumes/Data/Climatic_Data/EnviDat/envicloud/chelsa/chelsa_V1/"
+
+# Load observations
+obs <- read.table(paste(di, "calculated_month_tmin_TD2.txt", sep = ""), header = TRUE, sep = ";") %>%
+  mutate(date = as.Date(paste(Year, Month, "15", sep = "-"), tryFormats = c("%Y-%m-%d")),
+         days_in_month = days_in_month(date)) 
+
+# Load stations coordinates
+stations_names <- data.frame(INDICATIVO = unique(obs$INDICATIVO))
+my_stations_23030 <- read.table(paste(di, "Datos_estaciones/0. Estaciones_CLIMA.txt", sep = ""), header = TRUE, sep = ";", dec = ",") %>%
+  right_join(stations_names)
+my_stations_23030_spdf <- SpatialPointsDataFrame(coords = my_stations_23030[,c(5,6)], data = my_stations_23030)
+plot(my_stations_23030_spdf)
+projection(my_stations_23030_spdf) # Not prj defined
+CRS.ED50 <- CRS("+init=epsg:23030 +proj=utm +zone=30 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs")
+proj4string(my_stations_23030_spdf) <- CRS.ED50
+projection(my_stations_23030_spdf)
+
+## ACCESS model
+# Load stack from model
+my_stack <- stack(paste(folder_harddisk, "tasmin_ACCESS1-3_historical_1950_2005.nc", sep = ""), varname = "air_temperature")
+# Extract modelled values 
+my_values <- as.matrix(t(raster::extract(my_stack, my_stations_23030_spdf, method = 'simple'))) 
+ACCESS_df <- as.data.frame(my_values)
+colnames(ACCESS_df) <- my_stations_23030_spdf@data$INDICATIVO
+ACCESS_df$Layer <- rownames(my_values)
+# Fetch data
+ACCESS_modelled <- melt(ACCESS_df, id.vars = c("Layer"))
+colnames(ACCESS_modelled) <- c("Layer", "INDICATIVO", "ACCESS_month_tmin_K")
+
+## CESM model
+# Load stack from model
+my_stack <- stack(paste(folder_harddisk, "tasmin_CESM1-BGC_historical_1950_2005.nc", sep = ""), varname = "air_temperature")
+# Extract modelled values 
+my_values <- as.matrix(t(raster::extract(my_stack, my_stations_23030_spdf, method = 'simple'))) 
+CESM_df <- as.data.frame(my_values)
+colnames(CESM_df) <- my_stations_23030_spdf@data$INDICATIVO
+CESM_df$Layer <- rownames(my_values)
+# Fetch data
+CESM_modelled <- melt(CESM_df, id.vars = c("Layer"))
+colnames(CESM_modelled) <- c("Layer", "INDICATIVO", "CESM_month_tmin_K")
+
+## CMCC model
+# Load stack from model
+my_stack <- stack(paste(folder_harddisk, "tasmin_CMCC-CM_historical_1950_2005.nc", sep = ""), varname = "air_temperature")
+# Extract modelled values 
+my_values <- as.matrix(t(raster::extract(my_stack, my_stations_23030_spdf, method = 'simple'))) 
+CMCC_df <- as.data.frame(my_values)
+colnames(CMCC_df) <- my_stations_23030_spdf@data$INDICATIVO
+CMCC_df$Layer <- rownames(my_values)
+# Fetch data
+CMCC_modelled <- melt(CMCC_df, id.vars = c("Layer"))
+colnames(CMCC_modelled) <- c("Layer", "INDICATIVO", "CMCC_month_tmin_K")
+
+## CMCC model
+# Load stack from model
+my_stack <- stack(paste(folder_harddisk, "tasmin_MIROC5_historical_1950_2005.nc", sep = ""), varname = "air_temperature")
+# Extract modelled values 
+my_values <- as.matrix(t(raster::extract(my_stack, my_stations_23030_spdf, method = 'simple'))) 
+MIROC_df <- as.data.frame(my_values)
+colnames(MIROC_df) <- my_stations_23030_spdf@data$INDICATIVO
+MIROC_df$Layer <- rownames(my_values)
+# Fetch data
+MIROC_modelled <- melt(MIROC_df, id.vars = c("Layer"))
+colnames(MIROC_modelled) <- c("Layer", "INDICATIVO", "MIROC_month_tmin_K")
+
+# Join obs and modelled
+obs_modelled <- obs %>%
+  mutate(weird_date = str_replace_all(date, "-", "."),
+         Layer = paste("X", weird_date, sep = "")) %>%
+  left_join(ACCESS_modelled) %>%
+  left_join(CESM_modelled) %>%
+  left_join(CMCC_modelled) %>%
+  left_join(MIROC_modelled) %>%
+  mutate(observed = month_tmin, 
+         ACCESS = ACCESS_month_tmin_K - 273.15,
+         CESM1 = CESM_month_tmin_K - 273.15,
+         CMCC = CMCC_month_tmin_K - 273.15,
+         MIROC5 = MIROC_month_tmin_K - 273.15)
+
+# Fetch data
+comparison <- obs_modelled %>%
+  dplyr::select(observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("observed")) %>%
+  filter(is.na(value) == FALSE)
+
+colnames(comparison) <- c("Observed", "Model", "Modelled")
+```
+
+```{r, echo = FALSE}
+jpeg(file = "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/outputs/tasmin_comparison.jpeg", width=6, height=6, units="in", res=300)
+ggplot(comparison, aes(x = Observed, y = Modelled)) +
+  geom_point(size = 0.1) +
+  facet_wrap(Model ~ ., ncol = 2) +
+  theme_classic() +
+  geom_smooth(method = "lm") +
+  ggtitle("Minimum temperature")
+dev.off()
+```
+
+# Calculate R2 and RMSE
+```{r, echo = FALSE}
+subset_ACCESS <- comparison %>% filter(Model == "ACCESS")
+subset_CESM1 <- comparison %>% filter(Model == "CESM1")
+subset_CMCC <- comparison %>% filter(Model == "CMCC")
+subset_MIROC5 <- comparison %>% filter(Model == "MIROC5")
+
+ACCESS_m <- lm(Modelled ~ Observed, subset_ACCESS)
+CESM1_m <- lm(Modelled ~ Observed, subset_CESM1)
+CMCC_m <- lm(Modelled ~ Observed, subset_CMCC)
+MIROC5_m <- lm(Modelled ~ Observed, subset_MIROC5)
+
+summary_table <- data.frame(Model = c("ACCESS", "CESM1", "CMCC", "MIROC5"),
+                            R2 = c(summary(ACCESS_m)$r.squared, summary(CESM1_m)$r.squared, summary(CMCC_m)$r.squared, summary(MIROC5_m)$r.squared),
+                            RMSE = c(sqrt(mean((subset_ACCESS$Observed - subset_ACCESS$Modelled)^2)), sqrt(mean((subset_CESM1$Observed - subset_CESM1$Modelled)^2)), sqrt(mean((subset_CMCC$Observed - subset_CMCC$Modelled)^2)), sqrt(mean((subset_MIROC5$Observed - subset_MIROC5$Modelled)^2))))
+
+summary_table
+
+summary(ACCESS_m)
+summary(CESM1_m)
+summary(CMCC_m)
+summary(MIROC5_m)
+```
+
+```{r, echo = FALSE}
+monthly_avg <- obs_modelled %>%
+  select(Month, observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  group_by(Month) %>%
+  summarise(avg_observations = mean(observed, na.rm = TRUE),
+            avg_ACCESS = mean(ACCESS, na.rm = TRUE),
+            avg_CESM1 = mean(CESM1, na.rm = TRUE),
+            avg_CMCC = mean(CMCC, na.rm = TRUE),
+            avg_MIROC5 = mean(MIROC5, na.rm = TRUE))
+
+tidy_monthly_avg <- melt(as.data.frame(monthly_avg), id.vars = c("Month")) %>%
+  filter(is.na(value) == FALSE)
+
+ggplot(tidy_monthly_avg, aes(x = Month, y = value, colour = variable)) +
+  geom_line() +
+  geom_point(size = 0.1) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ggtitle("Monthly avg of observations and modelled data")
+```
+
+```{r, echo = FALSE}
+tidy <- obs_modelled %>%
+  select(Month, observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("Month")) %>%
+  filter(is.na(value) == FALSE)
+
+ggplot(tidy, aes(x = Month, y = value)) +
+  geom_point(size = 0.1) +
+  facet_grid(variable ~ .) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(1:12)) +
+  ggtitle("Raw observations and modelled data")
+```
