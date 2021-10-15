@@ -15,18 +15,17 @@ Para evaluar los datos modelados con los datos observados, se han utilizado las 
 
 La comparación entre los datos modelados y observados resulta en un buen ajuste para la temperatura mínima y máxima (Figura_tmin_comparison, Figura_tmax_comparison), mientras que la precipitación tiene un ajuste bastante pobre (Figura_prec_comparison).
 
-<img src="/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/harvest_x_climate_LANDIS/images/tasmin_comparison.jpeg" alt="Figura_tmin_comparison.jpeg" style="zoom:25%;" />
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/tasmin_comparison.jpeg" alt="Figura_tmin_comparison" style="zoom:25%;" />
 
-![Figura_tmin_comparison.](/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/outputs/tasmin_comparison.jpeg)
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/tasmax_comparison.jpeg" alt="Figura_tmax_comparison" style="zoom:25%;" />
 
-![Figura_tmax_comparison.](/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/outputs/tasmax_comparison.jpeg)
-
-![Figura_prec_comparison.](/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/outputs/prec_comparison.jpeg)
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/prec_comparison.jpeg" alt="Figura_prec_comparison" style="zoom:25%;" />
 
 Ante esta situación analizamos en mayor detalle los datos de precipitación observados y modelados. La Figura_prec_annual_comparison muestra la media mensual para el periodo histórico de los datos modelados (cada uno de los modelos) y los datos de las estaciones de medición.
 
-![Figura_prec_annual_comparison.](/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/outputs/prec_comparison_monthly_pattern.jpeg)
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/prec_comparison_monthly_pattern.jpeg" alt="Figura_prec_annual_comparison" style="zoom:25%;" />
 
 Procedemos a realizar una correción del sesgo (bias-correction) por meses. Esta correctión se realizará por regiones climáticas (Figura_climate_regions), ya que LANDIS-II utiliza datos agregados de estas regiones y no mapas en las simulaciones. 
 
-![Figura_climate_regions](/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/data/climate/climate_regions_map.png)
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/climate_regions_map.png" alt="Figura_climate_regions" style="zoom:25%;" />
+
