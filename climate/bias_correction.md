@@ -13,7 +13,9 @@ En este experimento se utilizaron los climáticos utilizados publicados por Karg
 
 Para evaluar los datos modelados con los datos observados, se han utilizado las estaciones dentro de la zona de estudio. 
 
-La comparación entre los datos modelados y observados resulta en un buen ajuste para la temperatura mínima y máxima Figura_tmin_comparison, Figura_tmax_comparison, mientras que la precipitación tiene un ajuste bastante pobre Figura_prec_comparison.
+La comparación entre los datos modelados y observados resulta en un buen ajuste para la temperatura mínima y máxima (Figura_tmin_comparison, Figura_tmax_comparison), mientras que la precipitación tiene un ajuste bastante pobre (Figura_prec_comparison).
+
+<img src="/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/harvest_x_climate_LANDIS/images/tasmin_comparison.jpeg" alt="Figura_tmin_comparison.jpeg" style="zoom:25%;" />
 
 ![Figura_tmin_comparison.](/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/outputs/tasmin_comparison.jpeg)
 
