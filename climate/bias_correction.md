@@ -25,7 +25,9 @@ Ante esta situación analizamos en mayor detalle los datos de precipitación obs
 
 <img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/prec_comparison_monthly_pattern.jpeg" alt="Figura_prec_annual_comparison" style="zoom:50%;" />
 
-Procedemos a realizar una correción del sesgo (bias-correction) por meses. Esta correctión se realizará por regiones climáticas (Figura_climate_regions), ya que LANDIS-II utiliza datos agregados de estas regiones y no mapas en las simulaciones. 
+Procedemos a realizar una correción del sesgo (bias-correction) por meses. Esta correctión se realizará además por regiones climáticas (Figura_climate_regions), ya que LANDIS-II utiliza datos agregados de estas regiones y no mapas en las simulaciones. Por lo tanto, la comparación entre datos observados y modelados se hace por regiones (Figure_prec_precorrection).
 
 <img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/climate_regions_map.png" alt="Figura_climate_regions" style="zoom:50%;" />
+
+<img src="https://github.com/MARIASUAM/harvest_x_climate_LANDIS/blob/master/images/prec_precorrection.jpeg" alt="Figure_prec_precorrection" style="zoom:50%;" />
 
