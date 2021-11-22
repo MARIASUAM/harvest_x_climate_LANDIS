@@ -23,6 +23,9 @@ active_3042 <- readOGR(dsn = "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS
 projection(active_3042)
 plot(active_3042)
 
+proj3042 <- CRS(SRS_string="EPSG:3042")
+crs(active_3042) <- proj3042
+
 # Reproject stations
 all_stations_spdf_3042 <- spTransform(all_stations_spdf_23030, projection(active_3042))
 projection(all_stations_spdf_23030)
@@ -68,6 +71,9 @@ for(i in 1:length(stations_with_data$INDICATIVO)){
     prec_data <- rbind(prec_data, temp)
 }
 
+# Export
+# write.table(prec_data, paste("/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/climate/prec_data_nofilter.txt"), sep = ";")
+
 # Filter
 prec_gaps_check <- prec_data %>%
   dplyr::select(INDICATIVO, Year, Month, days_in_month, VALOR) %>%
@@ -82,6 +88,9 @@ month_prec <- prec_subset %>%
   group_by(INDICATIVO, Year, Month) %>%
   summarise(month_prec = sum(VALOR))
 
+# Export
+# write.table(month_prec, paste("/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/climate/calculated_month_prec.txt"), sep = ";")
+
 # Explore
 stations <- unique(month_prec$INDICATIVO)
 month_prec %>%
@@ -89,9 +98,6 @@ month_prec %>%
   mutate(date = as.Date(paste(Year, Month, "15", sep = "-"), tryFormats = c("%Y-%m-%d"))) %>%
   ggplot(aes(x = date, y = month_prec)) +
   geom_point()
-
-# Export
-# write.table(month_prec, paste("/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/climate/calculated_month_prec.txt"), sep = ";")
 
 # Identify number of prec events per month
 prec_events <- prec_subset %>%

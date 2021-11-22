@@ -3,18 +3,21 @@
 VAR <- "agbiomass"
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c("210913_conserv_current_MIROC5",
-                    "210913_conserv_rcp45_MIROC5",
-                    "210913_conserv_rcp85_MIROC5",
-                    "210913_nomanag_current_MIROC5",
-                    "210913_nomanag_rcp45_MIROC5",
-                    "210913_nomanag_rcp85_MIROC5",
-                    "210913_proactive_current_MIROC5",
-                    "210913_proactive_rcp45_MIROC5",
-                    "210913_proactive_rcp85_MIROC5",
-                    "210913_proactiveplus_current_MIROC5",
-                    "210913_proactiveplus_rcp45_MIROC5",
-                    "210913_proactiveplus_rcp85_MIROC5")
+mgmt.scenarios <- c("210927_conserv_current_rep1",
+                    "210927_conserv_rcp45_rep1",
+                    "210927_conserv_rcp85_rep1",
+                    "210927_nomanag_current_rep1",
+                    "210927_nomanag_rcp45_rep1",
+                    "210927_nomanag_rcp85_rep1",
+                    "210927_proactive_current_rep1",
+                    "210927_proactive_rcp45_rep1",
+                    "210927_proactive_rcp85_rep1",
+                    "210927_proactiveplus_current_rep1",
+                    "210927_proactiveplus_rcp45_rep1",
+                    "210927_proactiveplus_rcp85_rep1",
+                    "210930_conservplus_current_rep1",
+                    "210930_conservplus_rcp45_rep1",
+                    "210930_conservplus_rcp85_rep1")
 
 ### SETUP ###
 di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
@@ -176,7 +179,7 @@ change_perc_ft <- perc_ft %>%
 change_perc_ft$Harv_scenario <- as.factor(change_perc_ft$Harv_scenario)
 levels(change_perc_ft$Harv_scenario)<- c("nomanag", "conserv", "proactive", "proactiveplus")
 
-jpeg(file = paste(di, "outputs/210913_forest_types_pines_mask.jpeg", sep = ""), width = 18, height = 12, units="in", res=300)
+# jpeg(file = paste(di, "210927_outputs/forest_types_conservplus.jpeg", sep = ""), width = 18, height = 12, units="in", res=300)
 change_perc_ft %>%
   ggplot(aes(x = Forest_type, y = Perc_change)) +
   geom_bar(stat = "identity", position="dodge", aes(colour = Harv_scenario, fill = Harv_scenario, alpha = Clim_scenario)) +
@@ -186,7 +189,7 @@ change_perc_ft %>%
   scale_fill_manual(values = cols) +
   ylab("Percentage of change among pines plantations (%)") +
   xlab(NULL)
-dev.off()
+# dev.off()
 
 # Plot as maps
 all_cells <- data.frame(Cell = 1:length(pines_mask[]))

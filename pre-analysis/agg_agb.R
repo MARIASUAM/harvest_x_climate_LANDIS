@@ -1,17 +1,20 @@
 # Analysis of AGB on aggregated tables
 
-mgmt.scenarios <- c("210913_conserv_current_MIROC5",
-                    "210913_conserv_rcp45_MIROC5",
-                    "210913_conserv_rcp85_MIROC5",
-                    "210913_nomanag_current_MIROC5",
-                    "210913_nomanag_rcp45_MIROC5",
-                    "210913_nomanag_rcp85_MIROC5",
-                    "210913_proactive_current_MIROC5",
-                    "210913_proactive_rcp45_MIROC5",
-                    "210913_proactive_rcp85_MIROC5",
-                    "210913_proactiveplus_current_MIROC5",
-                    "210913_proactiveplus_rcp45_MIROC5",
-                    "210913_proactiveplus_rcp85_MIROC5")
+mgmt.scenarios <- c("210927_conserv_current_rep1",
+                    "210927_conserv_rcp45_rep1",
+                    "210927_conserv_rcp85_rep1",
+                    "210927_nomanag_current_rep1",
+                    "210927_nomanag_rcp45_rep1",
+                    "210927_nomanag_rcp85_rep1",
+                    "210927_proactive_current_rep1",
+                    "210927_proactive_rcp45_rep1",
+                    "210927_proactive_rcp85_rep1",
+                    "210927_proactiveplus_current_rep1",
+                    "210927_proactiveplus_rcp45_rep1",
+                    "210927_proactiveplus_rcp85_rep1",
+                    "210930_conservplus_current_rep1",
+                    "210930_conservplus_rcp45_rep1",
+                    "210930_conservplus_rcp85_rep1")
 
 ### SETUP 
 library(dplyr)
@@ -49,11 +52,10 @@ for (i in 1:length(mgmt.scenarios)) {
 agb_dense_pines$Harv_scenario <- as.factor(agb_dense_pines$Harv_scenario)
 agb_pines$Harv_scenario <- as.factor(agb_pines$Harv_scenario)
 
-levels(agb_dense_pines$Harv_scenario)<- c("nomanag", "conserv", "proactive", "proactiveplus")
-levels(agb_pines$Harv_scenario)<- c("nomanag", "conserv", "proactive", "proactiveplus")
+levels(agb_dense_pines$Harv_scenario)<- c("nomanag", "conserv", "conservplus", "proactive", "proactiveplus")
+levels(agb_pines$Harv_scenario)<- c("nomanag", "conserv", "conservplus", "proactive", "proactiveplus")
 
 # AGB stacked by species
-jpeg(file = paste(di, "outputs/210922_agb_pines_mask.jpeg", sep = ""), width=18, height=12, units="in", res=300)
 agb_pines %>%
   left_join(groups) %>%
   dplyr::select(-Species, -Scenario, -Avg_tnha, -SD_tnha) %>%
@@ -64,9 +66,8 @@ agb_pines %>%
   facet_wrap(Clim_scenario ~ Harv_scenario) + # , scales = "free_y"
   theme_classic() +
   theme(legend.position = "bottom")
-dev.off()
 
-jpeg(file = paste(di, "outputs/210922_agb_dense_pines_mask.jpeg", sep = ""), width=18, height=12, units="in", res=300)
+jpeg(file = paste(di, "210927_outputs/agb_conservplus.jpeg", sep = ""), width=18, height=12, units="in", res=300)
 agb_dense_pines %>%
   left_join(groups) %>%
   dplyr::select(-Species, -Scenario, -Avg_tnha, -SD_tnha) %>%
@@ -74,13 +75,12 @@ agb_dense_pines %>%
   summarise(Total_tn = sum(Total_tn)) %>%
   ggplot(aes(x = Time, y = Total_tn, fill = Group)) + # Total_tn / 53367
   geom_area() +
-  facet_wrap(Clim_scenario ~ Harv_scenario) + # , scales = "free_y"
+  facet_wrap(Clim_scenario ~ Harv_scenario, ncol = 5) + # , scales = "free_y"
   theme_classic() +
   theme(legend.position = "bottom")
 dev.off()
 
 # # Plotting
-# # jpeg(file = paste(di, "outputs/210910_agb_oaks_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 agb_dense_pines %>%
   filter(Species == "qilex" |
            Species == "qfaginea" |
@@ -93,9 +93,7 @@ agb_dense_pines %>%
   theme(legend.position = "bottom") +
   scale_color_manual(values = cols) +
   scale_linetype_manual(values = lines)
-# dev.off()
 
-# jpeg(file = paste(di, "outputs/210910_agb_pines_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 agb_dense_pines %>%
   filter(Species == "ppinaster" |
            Species == "pnigra" |
@@ -109,11 +107,9 @@ agb_dense_pines %>%
   theme(legend.position = "bottom") +
   scale_color_manual(values = cols) +
   scale_linetype_manual(values = lines)
-# dev.off()
 
 # AGB by groups
 ## oaks
-# jpeg(file = paste(di, "outputs/210910_agb_oaks_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 # agb %>%
 #   filter(Species == "qilex" | 
 #            Species == "qfaginea" | 
@@ -128,10 +124,8 @@ agb_dense_pines %>%
 #   theme(legend.position = "bottom") +
 #   scale_color_manual(values = cols) +
 #   scale_linetype_manual(values = lines)
-# # dev.off()
 # 
 # ## pines
-# # jpeg(file = paste(di, "outputs/210910_agb_pines_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 # agb %>%
 #   filter(Species == "ppinaster" | 
 #            Species == "phalepensis" | 
@@ -147,7 +141,6 @@ agb_dense_pines %>%
 #   theme(legend.position = "bottom") +
 #   scale_color_manual(values = cols) +
 #   scale_linetype_manual(values = lines)
-# # dev.off()
 # 
 # # Pine species and oaks as groups
 # agb_groups <- agb %>%

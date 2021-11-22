@@ -20,7 +20,6 @@ pines_in_mas <- data.frame(pines = pines_mask[],
   summarise(cells_of_pines_in_ma = n()) %>%
   left_join(mas_surface) %>%
   mutate(prop_pines = cells_of_pines_in_ma / cells_in_ma)
-write.table(pines_in_mas, paste(di, "outputs/dense_pines_in_mas.txt", sep = ""))
 
 # Calculate percentage of cells of pines in whole active area
 active_cells <- data.frame(MA = mgmt_areas[])

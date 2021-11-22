@@ -1,17 +1,20 @@
 # Analysis on aggregated tables
 
-mgmt.scenarios <- c("210913_nomanag_current_MIROC5",
-                    "210913_conserv_current_MIROC5",
-                    "210913_conserv_rcp45_MIROC5",
-                    "210913_conserv_rcp85_MIROC5",
-                    "210913_nomanag_rcp45_MIROC5",
-                    "210913_nomanag_rcp85_MIROC5",
-                    "210913_proactive_current_MIROC5",
-                    "210913_proactive_rcp45_MIROC5",
-                    "210913_proactive_rcp85_MIROC5",
-                    "210913_proactiveplus_current_MIROC5",
-                    "210913_proactiveplus_rcp45_MIROC5",
-                    "210913_proactiveplus_rcp85_MIROC5")
+mgmt.scenarios <- c("210927_conserv_current_rep1",
+                    "210927_conserv_rcp45_rep1",
+                    "210927_conserv_rcp85_rep1",
+                    "210927_nomanag_current_rep1",
+                    "210927_nomanag_rcp45_rep1",
+                    "210927_nomanag_rcp85_rep1",
+                    "210927_proactive_current_rep1",
+                    "210927_proactive_rcp45_rep1",
+                    "210927_proactive_rcp85_rep1",
+                    "210927_proactiveplus_current_rep1",
+                    "210927_proactiveplus_rcp45_rep1",
+                    "210927_proactiveplus_rcp85_rep1",
+                    "210930_conservplus_current_rep1",
+                    "210930_conservplus_rcp45_rep1",
+                    "210930_conservplus_rcp85_rep1")
 
 ### SETUP 
 library(dplyr)
@@ -52,7 +55,6 @@ for (i in 1:length(mgmt.scenarios)) {
 }
 
 start <- 2005
-# jpeg(file = paste(di, "outputs/210921_psn_", start, "_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 psn_pines %>%
   filter(Year == start) %>%
   ggplot(aes(x = Month, y = Avg_Net_Psn, group = Scenario)) +
@@ -66,10 +68,8 @@ psn_pines %>%
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
   scale_y_continuous("Avg Net Photosynthesis", limits = c(0, 150)) +
   ggtitle(paste("Year", start, sep = " "))
-# dev.off()
 
 end <- 2100
-# jpeg(file = paste(di, "outputs/210921_psn_", end, "_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 psn_pines %>%
   filter(Year == end) %>%
   ggplot(aes(x = Month, y = Avg_Net_Psn, group = Scenario)) +
@@ -83,12 +83,10 @@ psn_pines %>%
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
   scale_y_continuous("Avg Net Photosynthesis", limits = c(0, 150)) +
   ggtitle(paste("Year", end, sep = " "))
-# dev.off()
 
 
 
 start <- 2005
-# jpeg(file = paste(di, "outputs/210921_psn_", start, "_dense_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 psn_dense_pines %>%
   filter(Year == start) %>%
   ggplot(aes(x = Month, y = Avg_Net_Psn, group = Scenario)) +
@@ -102,10 +100,8 @@ psn_dense_pines %>%
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
   scale_y_continuous("Avg Net Photosynthesis", limits = c(0, 150)) +
   ggtitle(paste("Year", start, sep = " "))
-# dev.off()
 
 end <- 2100
-# jpeg(file = paste(di, "outputs/210921_psn_", end, "_dense_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 psn_dense_pines %>%
   filter(Year == end) %>%
   ggplot(aes(x = Month, y = Avg_Net_Psn, group = Scenario)) +
@@ -119,23 +115,22 @@ psn_dense_pines %>%
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
   scale_y_continuous("Avg Net Photosynthesis", limits = c(0, 150)) +
   ggtitle(paste("Year", end, sep = " "))
-# dev.off()
 
-# jpeg(file = paste(di, "outputs/210913_psn_comparison_dense_pines_mask.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+psn_dense_pines$Harv_scenario <- as.factor(psn_dense_pines$Harv_scenario)
+levels(psn_dense_pines$Harv_scenario)<- c("nomanag", "conserv", "conservplus", "proactive", "proactiveplus")
+
+jpeg(file = paste(di, "210927_outputs/psn_conservplus_", start, "_pines_mask.jpeg", sep = ""), width=12, height=8, units="in", res=300)
 psn_dense_pines %>%
-  filter(Time == 0 | Time == 95,
-         Harv_scenario == "nomanag") %>%
+  filter(Time == 0 | Time == 95) %>%
   ggplot(aes(x = months_num, y = Avg_Net_Psn, group = as.factor(Year))) +
   geom_line(aes(color = as.factor(Year))) +
   geom_point(aes(color = as.factor(Year))) +
-  facet_grid(Clim_scenario ~ .) +
+  facet_grid(Clim_scenario ~ Harv_scenario) +
   theme_classic() +
   theme(legend.position = "bottom", legend.title = element_blank()) +
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
-  scale_y_continuous("Avg Net Photosynthesis") +
-  ggtitle("No management scenario")
-# dev.off()
-
+  scale_y_continuous("Avg Net Photosynthesis")
+dev.off()
 
 psn_t0 <- psn_dense_pines %>%
   filter(Time == 0,

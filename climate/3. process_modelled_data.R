@@ -13,7 +13,7 @@ folder_harddisk <- "/Volumes/Data/Climatic_Data/EnviDat/envicloud/chelsa/chelsa_
 climate_regions <- raster("/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/indata_generation/output_files/ecoregions/try_6_20200403/20200406_4_4_clustering.tif")
 aoi <- raster("/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/indata_generation/output_files/study_area_raster_3042.asc", sep = "")
 
-# Create accesory objects
+# Create accessory objects
 months <- c(1:12)
 df <- data.frame(Climate_region = climate_regions[]) 
 

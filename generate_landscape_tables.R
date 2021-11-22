@@ -1,12 +1,5 @@
 # Generate aggregated tables for pine mask
 
-# Execution diary
-  # rep1 done
-  # rep2 done
-  # rep3 done
-  
-  # rep4 current & rcp45 running
-
 ### SETUP
 library(raster)
 library(dplyr)
@@ -24,19 +17,69 @@ dec_times_no0 <- c(10, 20, 30, 40, 50, 60, 70, 80, 90)
 months_ch <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 
 # Management scenarios
-mgmt.scenarios <- c("210927_conserv_current_rep4",
-                    "210927_conserv_rcp45_rep4", 
-                    "210927_nomanag_current_rep4",
-                    "210927_nomanag_rcp45_rep4", 
-                    "210927_proactive_current_rep4",
-                    "210927_proactive_rcp45_rep4",
-                    "210927_proactiveplus_current_rep4",
-                    "210927_proactiveplus_rcp45_rep4")
-                    # "210927_nomanag_rcp85_rep4",
+mgmt.scenarios <- c(
+                    "210927_conserv_current_rep1",
+                    # "210927_conserv_current_rep2",
+                    # "210927_conserv_current_rep3",
+                    # "210927_conserv_current_rep4",
+                    # "210927_conserv_current_rep5",
+                    "210927_conserv_rcp45_rep1",
+                    # "210927_conserv_rcp45_rep2",
+                    # "210927_conserv_rcp45_rep3",
+                    # "210927_conserv_rcp45_rep4",
+                    # "210927_conserv_rcp45_rep5",
+                    "210927_conserv_rcp85_rep1",
+                    # "210927_conserv_rcp85_rep2",
+                    # "210927_conserv_rcp85_rep3",
                     # "210927_conserv_rcp85_rep4",
+                    # "210927_conserv_rcp85_rep5",
+                    "210927_nomanag_current_rep1",
+                    # "210927_nomanag_current_rep2",
+                    # "210927_nomanag_current_rep3",
+                    # "210927_nomanag_current_rep4",
+                    # "210927_nomanag_current_rep5",
+                    "210927_nomanag_rcp45_rep1",
+                    # "210927_nomanag_rcp45_rep2",
+                    # "210927_nomanag_rcp45_rep3",
+                    # "210927_nomanag_rcp45_rep4",
+                    # "210927_nomanag_rcp45_rep5",
+                    "210927_nomanag_rcp85_rep1",
+                    # "210927_nomanag_rcp85_rep2",
+                    # "210927_nomanag_rcp85_rep3",
+                    # "210927_nomanag_rcp85_rep4",
+                    # "210927_nomanag_rcp85_rep5",
+                    "210927_proactive_current_rep1",
+                    # "210927_proactive_current_rep2",
+                    # "210927_proactive_current_rep3",
+                    # "210927_proactive_current_rep4",
+                    # "210927_proactive_current_rep5",
+                    "210927_proactive_rcp45_rep1",
+                    # "210927_proactive_rcp45_rep2",
+                    # "210927_proactive_rcp45_rep3",
+                    # "210927_proactive_rcp45_rep4",
+                    # "210927_proactive_rcp45_rep5",
+                    "210927_proactive_rcp85_rep1",
+                    # "210927_proactive_rcp85_rep2",
+                    # "210927_proactive_rcp85_rep3",
                     # "210927_proactive_rcp85_rep4",
-                    # "210927_proactiveplus_rcp85_rep4")
-
+                    # "210927_proactive_rcp85_rep5",
+                    "210927_proactiveplus_current_rep1",
+                    # "210927_proactiveplus_current_rep2",
+                    # "210927_proactiveplus_current_rep3",
+                    # "210927_proactiveplus_current_rep4",
+                    # "210927_proactiveplus_current_rep5",
+                    "210927_proactiveplus_rcp45_rep1",
+                    # "210927_proactiveplus_rcp45_rep2",
+                    # "210927_proactiveplus_rcp45_rep3",
+                    # "210927_proactiveplus_rcp45_rep4",
+                    # "210927_proactiveplus_rcp45_rep5",
+                    "210927_proactiveplus_rcp85_rep1") #,
+                    # "210927_proactiveplus_rcp85_rep2",
+                    # "210927_proactiveplus_rcp85_rep3",
+                    # "210927_proactiveplus_rcp85_rep4",
+                    # "210927_proactiveplus_rcp85_rep5"
+                    )
+                  
 ### PINE PLANTATIONS MASKS
 pines_mask <- raster(paste(di, "data/pines_mask.img", sep = ""))
 dense_pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))
@@ -329,14 +372,34 @@ for (i in 1:length(mgmt.scenarios)) {
     harv_biomass_pines_df <- rbind(harv_biomass_pines_df,
                                    data.frame(Scenario = mgmt.scenarios[i], Time = dec_times_no0[j],
                                          Avg_harv_biomass = cellStats(harv_biomass_pines, mean, na.rm=TRUE),
-                                         SD_harv_biomass = cellStats(harv_biomass_pines, sd, na.rm=TRUE)))
+                                         # SD_harv_biomass = cellStats(harv_biomass_pines, sd, na.rm=TRUE)))
+                                         Sum_harv_biomass = cellStats(harv_biomass_pines, sum, na.rm=TRUE)))
 
     harv_biomass_dense_pines_df <- rbind(harv_biomass_dense_pines_df,
                                    data.frame(Scenario = mgmt.scenarios[i], Time = dec_times_no0[j],
                                               Avg_harv_biomass = cellStats(harv_biomass_dense_pines, mean, na.rm=TRUE),
-                                              SD_harv_biomass = cellStats(harv_biomass_dense_pines, sd, na.rm=TRUE)))
+                                              # SD_harv_biomass = cellStats(harv_biomass_dense_pines, sd, na.rm=TRUE))),
+                                              Sum_harv_biomass = cellStats(harv_biomass_dense_pines, sum, na.rm=TRUE)))
   }
   write.table(harv_biomass_pines_df, paste(di, mgmt.scenarios[i], "/results/aggregated_harvested_biomass_pines.txt", sep = ""))
   write.table(harv_biomass_dense_pines_df, paste(di, mgmt.scenarios[i], "/results/aggregated_harvested_biomass_dense_pines.txt", sep = ""))
 }
 
+### MORTALITY
+for (i in 1:length(mgmt.scenarios)) {
+  mort_dense_pines_df <- data.frame()
+  for (j in 1:length(times_no0)) {
+    for (h in 1:length(pines_and_oaks)) {
+      temp <- raster(paste(di, mgmt.scenarios[i], "/results/", pines_and_oaks[h], "_diff_cohorts_", times_no0[j], ".asc", sep = ""))
+      temp_dense_pines_masked <- mask(temp, dense_pines_mask) # Mask by pine plantations
+      temp_dense_pines_masked <- reclassify(temp_dense_pines_masked, 
+                                            cbind(0, Inf, 0), right=FALSE) # Reclassify by discarding new cohorts (positive values)
+      
+      temp_dense_pines_masked <- temp_dense_pines_masked * -1 # Absolute value to get dead cohorts as positive values
+      mort_dense_pines_df <- rbind(mort_dense_pines_df,
+                                  data.frame(Scenario = mgmt.scenarios[i], Time = times_no0[j], Species = pines_and_oaks[h],
+                                             Total_dead_cohorts = cellStats(temp_dense_pines_masked, sum, na.rm=TRUE)))
+    }
+  }
+  write.table(mort_dense_pines_df, paste(di, mgmt.scenarios[i], "/results/aggregated_diff_cohorts.txt", sep = ""))
+}

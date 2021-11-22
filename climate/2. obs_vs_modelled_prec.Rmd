@@ -6,6 +6,7 @@ editor_options:
 ---
 
 ```{r, include = FALSE}
+# Setup
 library(raster)
 library(dplyr)
 library(reshape)
@@ -14,8 +15,10 @@ library(lubridate)
 
 di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/data/climate/"
 folder_harddisk <- "/Volumes/Data/Climatic_Data/EnviDat/envicloud/chelsa/chelsa_V1/"
+```
 
-# Load observations
+# Load observations and modelled data
+```{r}
 obs <- read.table(paste(di, "calculated_month_prec.txt", sep = ""), header = TRUE, sep = ";") %>%
   mutate(date = as.Date(paste(Year, Month, "15", sep = "-"), tryFormats = c("%Y-%m-%d")),
          days_in_month = days_in_month(date)) 
@@ -78,8 +81,10 @@ MIROC_df$Layer <- rownames(my_values)
 # Fetch data
 MIROC_modelled <- melt(MIROC_df, id.vars = c("Layer"))
 colnames(MIROC_modelled) <- c("Layer", "INDICATIVO", "MIROC_month_prec_mm_s")
+```
 
-# Join obs and modelled
+# Join observations and modelled data
+```{r}
 obs_modelled <- obs %>%
   mutate(weird_date = str_replace_all(date, "-", "."),
          Layer = paste("X", weird_date, sep = "")) %>%
@@ -102,6 +107,7 @@ comparison <- obs_modelled %>%
 colnames(comparison) <- c("Observed", "Model", "Modelled")
 ```
 
+# Plot observed versus modelled
 ```{r, echo = FALSE}
 jpeg(file = "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/outputs/prec_comparison.jpeg", width=6, height=6, units="in", res=300)
 ggplot(comparison, aes(x = Observed, y = Modelled)) +
@@ -143,41 +149,59 @@ summary(CMCC_m)
 summary(MIROC5_m)
 ```
 
+# Calculate mean difference 
+```{r}
+dif <- obs_modelled %>%
+  mutate(ACCESS_Dif = ACCESS - observed,
+         CESM_Dif = CESM1 - observed,
+         CMCC_Dif = CMCC - observed,
+         MIROC5_Dif = MIROC5 - observed)
+
+mean(dif$ACCESS_Dif, na.rm = TRUE)
+mean(dif$CESM_Dif, na.rm = TRUE)
+mean(dif$CMCC_Dif, na.rm = TRUE)
+mean(dif$MIROC5_Dif, na.rm = TRUE)
+```
+
 ```{r, echo = FALSE}
 # Plot series
 # obs %>%
 #   filter(Year >= 1950 & Year <= 2005) %>%
 #   select(Month, month_prec) %>%
 #   group_by(Month) %>%
-#   summarise(avg_accross_stations = mean(month_prec)) %>%
-#   ggplot(aes(x = Month, y = avg_accross_stations)) +
+#   summarise(avg_across_stations = mean(month_prec)) %>%
+#   ggplot(aes(x = Month, y = avg_across_stations)) +
 #   geom_line() +
 #   geom_point() +
 #   theme(legend.position = "none") +
 #   theme_minimal() +
 #   scale_x_continuous(breaks = c(1:12)) +
-#   ggtitle("Average accross all measuring stations - 1950-2005 period")
+#   ggtitle("Average across all measuring stations - 1950-2005 period")
 ```
 
+# Plot monthly pattern observed vs modelled
 ```{r, echo = FALSE}
 monthly_avg <- obs_modelled %>%
   select(Month, observed, ACCESS, CESM1, CMCC, MIROC5) %>%
   group_by(Month) %>%
-  summarise(avg_observations = mean(observed, na.rm = TRUE),
-            avg_ACCESS = mean(ACCESS, na.rm = TRUE),
-            avg_CESM1 = mean(CESM1, na.rm = TRUE),
-            avg_CMCC = mean(CMCC, na.rm = TRUE),
-            avg_MIROC5 = mean(MIROC5, na.rm = TRUE))
+  summarise(Observations = mean(observed, na.rm = TRUE),
+            ACCESS = mean(ACCESS, na.rm = TRUE),
+            CESM1 = mean(CESM1, na.rm = TRUE),
+            CMCC = mean(CMCC, na.rm = TRUE),
+            MIROC5 = mean(MIROC5, na.rm = TRUE))
 
 tidy_monthly_avg <- melt(as.data.frame(monthly_avg), id.vars = c("Month")) %>%
   filter(is.na(value) == FALSE)
 
+jpeg(file = "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/outputs/prec_comparison_monthly_pattern.jpeg", width=8, height=6, units="in", res=300)
 ggplot(tidy_monthly_avg, aes(x = Month, y = value, colour = variable)) +
-  geom_line() +
-  geom_point(size = 0.1) +
-  theme_minimal() +
-  scale_x_continuous(breaks = c(1:12)) +
-  ggtitle("Monthly avg of observations and modelled data")
+  geom_line(aes(linetype = variable, color = variable)) +
+  geom_point(size = 0.4) +
+  theme_classic() +
+  theme(legend.position = "bottom", legend.title = element_blank()) +
+  scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
+  scale_y_continuous("Monthly precipitation (mm)")
+dev.off()
 ```
 
 ```{r, echo = FALSE}
@@ -192,5 +216,198 @@ ggplot(tidy, aes(x = Month, y = value)) +
   theme_minimal() +
   scale_x_continuous(breaks = c(1:12)) +
   ggtitle("Raw observations and modelled data")
+```
+
+# Seasons: check observations vs modelled
+```{r}
+winter <- obs_modelled %>%
+  filter(Month == 1 | Month == 2 | Month == 3) %>%
+  dplyr::select(observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("observed")) %>%
+  filter(is.na(value) == FALSE) %>%
+  dplyr::rename(Observed = observed,
+         Model = variable,
+         Modelled = value)
+
+ggplot(winter, aes(x = Observed, y = Modelled)) +
+  geom_point(size = 0.1) +
+  facet_wrap(Model ~ ., ncol = 2) +
+  theme_classic() +
+  geom_smooth(method = "lm") +
+  ggtitle("Precipitation")
+
+subset_ACCESS <- winter %>% filter(Model == "ACCESS")
+subset_CESM1 <- winter %>% filter(Model == "CESM1")
+subset_CMCC <- winter %>% filter(Model == "CMCC")
+subset_MIROC5 <- winter %>% filter(Model == "MIROC5")
+
+ACCESS_m <- lm(Modelled ~ Observed, subset_ACCESS)
+CESM1_m <- lm(Modelled ~ Observed, subset_CESM1)
+CMCC_m <- lm(Modelled ~ Observed, subset_CMCC)
+MIROC5_m <- lm(Modelled ~ Observed, subset_MIROC5)
+
+summary_table_winter <- data.frame(Model = c("ACCESS", "CESM1", "CMCC", "MIROC5"),
+                            R2 = c(summary(ACCESS_m)$r.squared, 
+                                   summary(CESM1_m)$r.squared,
+                                   summary(CMCC_m)$r.squared,
+                                   summary(MIROC5_m)$r.squared),
+                            RMSE = c(sqrt(mean((subset_ACCESS$Observed - subset_ACCESS$Modelled)^2)),
+                                     sqrt(mean((subset_CESM1$Observed - subset_CESM1$Modelled)^2)),
+                                     sqrt(mean((subset_CMCC$Observed - subset_CMCC$Modelled)^2)),
+                                     sqrt(mean((subset_MIROC5$Observed - subset_MIROC5$Modelled)^2))))
+```
+
+```{r}
+spring <- obs_modelled %>%
+  filter(Month == 4 | Month == 5 | Month == 6)%>%
+  dplyr::select(observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("observed")) %>%
+  filter(is.na(value) == FALSE) %>%
+  dplyr::rename(Observed = observed,
+         Model = variable,
+         Modelled = value)
+ggplot(spring, aes(x = Observed, y = Modelled)) +
+  geom_point(size = 0.1) +
+  facet_wrap(Model ~ ., ncol = 2) +
+  theme_classic() +
+  geom_smooth(method = "lm") +
+  ggtitle("Precipitation")
+
+subset_ACCESS <- spring %>% filter(Model == "ACCESS")
+subset_CESM1 <- spring %>% filter(Model == "CESM1")
+subset_CMCC <- spring %>% filter(Model == "CMCC")
+subset_MIROC5 <- spring %>% filter(Model == "MIROC5")
+
+ACCESS_m <- lm(Modelled ~ Observed, subset_ACCESS)
+CESM1_m <- lm(Modelled ~ Observed, subset_CESM1)
+CMCC_m <- lm(Modelled ~ Observed, subset_CMCC)
+MIROC5_m <- lm(Modelled ~ Observed, subset_MIROC5)
+
+summary_table_spring <- data.frame(Model = c("ACCESS", "CESM1", "CMCC", "MIROC5"),
+                            R2 = c(summary(ACCESS_m)$r.squared, 
+                                   summary(CESM1_m)$r.squared,
+                                   summary(CMCC_m)$r.squared,
+                                   summary(MIROC5_m)$r.squared),
+                            RMSE = c(sqrt(mean((subset_ACCESS$Observed - subset_ACCESS$Modelled)^2)),
+                                     sqrt(mean((subset_CESM1$Observed - subset_CESM1$Modelled)^2)),
+                                     sqrt(mean((subset_CMCC$Observed - subset_CMCC$Modelled)^2)),
+                                     sqrt(mean((subset_MIROC5$Observed - subset_MIROC5$Modelled)^2))))
+```
+
+```{r}
+summer <- obs_modelled %>%
+  filter(Month == 7 | Month == 8 | Month == 9)%>%
+  dplyr::select(observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("observed")) %>%
+  filter(is.na(value) == FALSE) %>%
+  dplyr::rename(Observed = observed,
+         Model = variable,
+         Modelled = value)
+ggplot(summer, aes(x = Observed, y = Modelled)) +
+  geom_point(size = 0.1) +
+  facet_wrap(Model ~ ., ncol = 2) +
+  theme_classic() +
+  geom_smooth(method = "lm") +
+  ggtitle("Precipitation")
+
+subset_ACCESS <- summer %>% filter(Model == "ACCESS")
+subset_CESM1 <- summer %>% filter(Model == "CESM1")
+subset_CMCC <- summer %>% filter(Model == "CMCC")
+subset_MIROC5 <- summer %>% filter(Model == "MIROC5")
+
+ACCESS_m <- lm(Modelled ~ Observed, subset_ACCESS)
+CESM1_m <- lm(Modelled ~ Observed, subset_CESM1)
+CMCC_m <- lm(Modelled ~ Observed, subset_CMCC)
+MIROC5_m <- lm(Modelled ~ Observed, subset_MIROC5)
+
+summary_table_summer <- data.frame(Model = c("ACCESS", "CESM1", "CMCC", "MIROC5"),
+                            R2 = c(summary(ACCESS_m)$r.squared, 
+                                   summary(CESM1_m)$r.squared,
+                                   summary(CMCC_m)$r.squared,
+                                   summary(MIROC5_m)$r.squared),
+                            RMSE = c(sqrt(mean((subset_ACCESS$Observed - subset_ACCESS$Modelled)^2)),
+                                     sqrt(mean((subset_CESM1$Observed - subset_CESM1$Modelled)^2)),
+                                     sqrt(mean((subset_CMCC$Observed - subset_CMCC$Modelled)^2)),
+                                     sqrt(mean((subset_MIROC5$Observed - subset_MIROC5$Modelled)^2))))
+```
+
+```{r}
+fall <- obs_modelled %>%
+  filter(Month == 10 | Month == 11 | Month == 12)%>%
+  dplyr::select(observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  melt(id.vars = c("observed")) %>%
+  filter(is.na(value) == FALSE) %>%
+  dplyr::rename(Observed = observed,
+         Model = variable,
+         Modelled = value)
+ggplot(fall, aes(x = Observed, y = Modelled)) +
+  geom_point(size = 0.1) +
+  facet_wrap(Model ~ ., ncol = 2) +
+  theme_classic() +
+  geom_smooth(method = "lm") +
+  ggtitle("Precipitation")
+
+subset_ACCESS <- fall %>% filter(Model == "ACCESS")
+subset_CESM1 <- fall %>% filter(Model == "CESM1")
+subset_CMCC <- fall %>% filter(Model == "CMCC")
+subset_MIROC5 <- fall %>% filter(Model == "MIROC5")
+
+ACCESS_m <- lm(Modelled ~ Observed, subset_ACCESS)
+CESM1_m <- lm(Modelled ~ Observed, subset_CESM1)
+CMCC_m <- lm(Modelled ~ Observed, subset_CMCC)
+MIROC5_m <- lm(Modelled ~ Observed, subset_MIROC5)
+
+summary_table_fall <- data.frame(Model = c("ACCESS", "CESM1", "CMCC", "MIROC5"),
+                            R2 = c(summary(ACCESS_m)$r.squared, 
+                                   summary(CESM1_m)$r.squared,
+                                   summary(CMCC_m)$r.squared,
+                                   summary(MIROC5_m)$r.squared),
+                            RMSE = c(sqrt(mean((subset_ACCESS$Observed - subset_ACCESS$Modelled)^2)),
+                                     sqrt(mean((subset_CESM1$Observed - subset_CESM1$Modelled)^2)),
+                                     sqrt(mean((subset_CMCC$Observed - subset_CMCC$Modelled)^2)),
+                                     sqrt(mean((subset_MIROC5$Observed - subset_MIROC5$Modelled)^2))))
+```
+
+# R2 and RMSE for season months
+```{r}
+summary_table_winter
+summary_table_spring
+summary_table_summer
+summary_table_fall
+```
+
+# Annual sums
+```{r}
+filter_full_obs <- obs_modelled %>%
+  select(Year, INDICATIVO) %>%
+  group_by(Year, INDICATIVO) %>%
+  summarise(count = n()) %>%
+  filter(count == 12)
+
+annual <- left_join(filter_full_obs, obs_modelled) %>%
+  select(Year, observed, ACCESS, CESM1, CMCC, MIROC5) %>%
+  group_by(Year) %>%
+  summarise_all(sum, na.rm = FALSE) %>%
+  mutate(ACCESS_Dif = ACCESS - observed,
+         CESM1_Dif = CESM1 - observed,
+         CMCC_Dif = CMCC - observed,
+         MIROC5_Dif = MIROC5 - observed)
+
+min(annual$observed)
+min(annual$ACCESS, na.rm = TRUE)
+min(annual$CESM1, na.rm = TRUE)
+min(annual$CMCC, na.rm = TRUE)
+min(annual$MIROC5, na.rm = TRUE)
+
+max(annual$observed)
+max(annual$ACCESS, na.rm = TRUE)
+max(annual$CESM1, na.rm = TRUE)
+max(annual$CMCC, na.rm = TRUE)
+max(annual$MIROC5, na.rm = TRUE)
+
+mean(annual$ACCESS_Dif, na.rm = TRUE)
+mean(annual$CESM1_Dif, na.rm = TRUE)
+mean(annual$CMCC_Dif, na.rm = TRUE)
+mean(annual$MIROC5_Dif, na.rm = TRUE)
 ```
 
