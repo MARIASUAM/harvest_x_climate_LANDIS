@@ -5,28 +5,17 @@ library(rasterVis)
 library(ggplot2)
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c("210927_nomanag_current",
-                    "210927_conserv_current",
-                    "210927_proactive_current",
-                    "210927_proactiveplus_current",
-                    "210927_nomanag_rcp45",
-                    "210927_conserv_rcp45",
-                    "210927_proactive_rcp45",
-                    "210927_proactiveplus_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_conserv_rcp85",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 ### SETUP ###
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 times <- c(0, 95)
 
 # Load maps per replicate group
 replicate <- "rep_5"
-time_step <- "time_95"
+time_step <- "time_0"
 rep_stack <- stack()
 for (i in seq_along(mgmt.scenarios)) {
     temp <- raster(paste(di, outputs_folder, "Forest_types_maps/",

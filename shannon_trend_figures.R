@@ -4,32 +4,10 @@ library(ggplot2)
 library(raster)
 library(rasterVis)
 
-mgmt.scenarios <- c("210927_nomanag_current_rep1",
-                    "210927_conserv_current_rep1",
-                    "210927_proactive_current_rep1",
-                    "210927_proactiveplus_current_rep1",
-                    "210927_nomanag_rcp45_rep1",
-                    "210927_conserv_rcp45_rep1",
-                    "210927_proactive_rcp45_rep1",
-                    "210927_proactiveplus_rcp45_rep1",
-                    "210927_nomanag_rcp85_rep1",
-                    "210927_conserv_rcp85_rep1",
-                    "210927_proactive_rcp85_rep1",
-                    "210927_proactiveplus_rcp85_rep1")
+mgmt.scenarios <- c(...) # Folder names with each replicate (one replicate set)
 
 # Labels
-labels <- data.frame(Scenario = c("210927_nomanag_current",
-                                  "210927_conserv_current",
-                                  "210927_proactive_current",
-                                  "210927_proactiveplus_current",
-                                  "210927_nomanag_rcp45",
-                                  "210927_conserv_rcp45",
-                                  "210927_proactive_rcp45",
-                                  "210927_proactiveplus_rcp45",
-                                  "210927_nomanag_rcp85",
-                                  "210927_conserv_rcp85",
-                                  "210927_proactive_rcp85",
-                                  "210927_proactiveplus_rcp85"),
+labels <- data.frame(Scenario = c(...), # Folder names with each scenario
                      Harv_sce = c("NoManagement", "Conservative", "Proactive", "ProactivePlus",
                                   "NoManagement", "Conservative", "Proactive", "ProactivePlus",
                                   "NoManagement", "Conservative", "Proactive", "ProactivePlus"),
@@ -38,8 +16,8 @@ labels <- data.frame(Scenario = c("210927_nomanag_current",
                                   "RCP8.5", "RCP8.5", "RCP8.5", "RCP8.5"))
 
 ### SETUP
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 ### PINE PLANTATIONS MASK
 pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))

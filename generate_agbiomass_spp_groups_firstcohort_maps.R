@@ -2,21 +2,10 @@
 
 library(raster)
 
-mgmt.scenarios <- c("210927_nomanag_current_rep2",
-                    "210927_conserv_current_rep2",
-                    "210927_proactive_current_rep2",
-                    "210927_proactiveplus_current_rep2",
-                    "210927_nomanag_rcp45_rep2",
-                    "210927_conserv_rcp45_rep2",
-                    "210927_proactive_rcp45_rep2",
-                    "210927_proactiveplus_rcp45_rep2",
-                    "210927_nomanag_rcp85_rep2",
-                    "210927_conserv_rcp85_rep2",
-                    "210927_proactive_rcp85_rep2",
-                    "210927_proactiveplus_rcp85_rep2")
+mgmt.scenarios <- c(...) # Folder names with each replicate
 
 ### SETUP
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
+di <- ".../experiments/" # Path to simulations folder
 
 oaks_and_pines <- c("ppinaster", "pnigra", "phalepensis", "psylvestris", 
                     "qilex", "qfaginea", "qpyrenaica")

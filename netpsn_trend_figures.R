@@ -4,32 +4,10 @@ library(ggplot2)
 library(raster)
 library(rasterVis)
 
-mgmt.scenarios <- c("210927_nomanag_current",
-                    "210927_conserv_current",
-                    "210927_proactive_current",
-                    "210927_proactiveplus_current",
-                    "210927_nomanag_rcp45",
-                    "210927_conserv_rcp45",
-                    "210927_proactive_rcp45",
-                    "210927_proactiveplus_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_conserv_rcp85",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 # Labels
-labels <- data.frame(Scenario = c("210927_nomanag_current",
-                                  "210927_conserv_current",
-                                  "210927_proactive_current",
-                                  "210927_proactiveplus_current",
-                                  "210927_nomanag_rcp45",
-                                  "210927_conserv_rcp45",
-                                  "210927_proactive_rcp45",
-                                  "210927_proactiveplus_rcp45",
-                                  "210927_nomanag_rcp85",
-                                  "210927_conserv_rcp85",
-                                  "210927_proactive_rcp85",
-                                  "210927_proactiveplus_rcp85"),
+labels <- data.frame(Scenario = c(...), # Folder names with each scenario
                      Harv_sce = c("NoManagement", "Conservative", "Proactive", "ProactivePlus",
                                   "NoManagement", "Conservative", "Proactive", "ProactivePlus",
                                   "NoManagement", "Conservative", "Proactive", "ProactivePlus"),
@@ -38,8 +16,8 @@ labels <- data.frame(Scenario = c("210927_nomanag_current",
                                   "RCP8.5", "RCP8.5", "RCP8.5", "RCP8.5"))
 
 ### SETUP
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 ### PINE PLANTATIONS MASK
 pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))
@@ -49,14 +27,10 @@ pvalues <- stack()
 taus <- stack()
 for (i in seq_along(mgmt.scenarios)) {
   temp_pvalue <- raster(paste0(di, outputs_folder, "NetPsn_Kendall/", mgmt.scenarios[i], "_kendall_results_pvalue.asc"))
-  # names(temp_pvalue) <- paste(strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][2],
-  #                              strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][3], sep = "_")
   names(temp_pvalue) <- paste(labels$Harv_sce[i], labels$Clim_sce[i], sep = "-")
   pvalues <- stack(pvalues, temp_pvalue)
   
   temp_tau <- raster(paste0(di, outputs_folder, "NetPsn_Kendall/", mgmt.scenarios[i], "_kendall_results_tau.asc"))
-  # names(temp_tau) <- paste(strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][2],
-  #                              strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][3], sep = "_")
   names(temp_tau) <- paste(labels$Harv_sce[i], labels$Clim_sce[i], sep = "-")
   taus <- stack(taus, temp_tau)
 }
@@ -80,20 +54,20 @@ gplot(taus) +
 dev.off()
 
 # Plot p-values
-gplot(pvalues) + 
-  geom_tile(aes(fill = value)) +
-  facet_wrap(~ variable, ncol = 4) +
-  coord_equal() +
-  theme_classic() +
-  scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
-  theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
-  ggtitle("") +
-  ylab("") +
-  xlab("")
+# gplot(pvalues) + 
+#   geom_tile(aes(fill = value)) +
+#   facet_wrap(~ variable, ncol = 4) +
+#   coord_equal() +
+#   theme_classic() +
+#   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
+#   theme(legend.position = "bottom",
+#         axis.title = element_text(size = 14),
+#         axis.text = element_text(size = 12),
+#         legend.text = element_text(size = 14),
+#         legend.title = element_blank()) +
+#   ggtitle("") +
+#   ylab("") +
+#   xlab("")
 
 m <- c(0, 0.05, 1,  0.05, 1, 2)
 rclmat <- matrix(m, ncol = 3, byrow=TRUE)

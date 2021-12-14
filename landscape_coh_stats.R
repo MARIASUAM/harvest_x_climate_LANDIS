@@ -1,17 +1,6 @@
 # Analysis of cohort statistics on aggregated tables
 
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5)
 
@@ -21,8 +10,8 @@ library(ggplot2)
 library(reshape2)
 library(lubridate)
 
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 cols <- c("conserv" = "#33A02C", # dark green
           "proactive" = "#6A3D9A", # dark purple
@@ -61,8 +50,8 @@ coh_stats_dense_pines <- all_replicates %>%
             Avg_total_spprich_accross_rep = mean(Avg_spp_rich),
             SD_total_spprich_accross_rep = sd(Avg_spp_rich))
 
-coh_stats_dense_pines$Harv_scenario <- as.factor(coh_stats_dense_pines$Harv_scenario)
-levels(coh_stats_dense_pines$Harv_scenario)<- c("nomanag", "conserv", "proactive", "proactiveplus")
+coh_stats_dense_pines$Harv_scenario <- factor(coh_stats_dense_pines$Harv_scenario, 
+                                     levels=c("No Management", "Conservative", "Proactive", "ProactivePlus"))
 
 # Plots
 jpeg(file = paste(di, outputs_folder, "count.jpeg", sep = ""), width = 12, height = 8, units="in", res=300)

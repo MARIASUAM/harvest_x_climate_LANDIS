@@ -1,17 +1,6 @@
 # Analysis on aggregated tables
 
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5)
 
@@ -22,8 +11,8 @@ library(reshape2)
 library(lubridate)
 library(tidyr)
 
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 cols <- c('#1b9e77','#7570b3')
 
@@ -63,11 +52,10 @@ psn_dense_pines <- psn_dense_pines %>%
   left_join(Harv_scenario.labs) %>%
   left_join(Clim_scenario.labs)
 
-psn_dense_pines$Harv_scenario <- as.factor(psn_dense_pines$Harv_scenario)
-levels(psn_dense_pines$Harv_scenario)<- c('No Management', 'Conservative', 'Proactive', 'ProactivePlus')
-
-psn_dense_pines$Clim_scenario <- as.factor(psn_dense_pines$Clim_scenario)
-levels(psn_dense_pines$Clim_scenario) <- c("Current", "RCP4.5", "RCP8.5")
+psn_dense_pines$Harv_scenario <- factor(psn_dense_pines$Harv_scenario, 
+                                     levels=c("No Management", "Conservative", "Proactive", "ProactivePlus"))
+psn_dense_pines$Clim_scenario <- factor(psn_dense_pines$Clim_scenario, 
+                                     levels=c("Current", "RCP4.5", "RCP8.5"))
 
 # Calculate mean and SD across replicates
 acc_rep <- psn_dense_pines %>%
@@ -178,7 +166,6 @@ years_avg %>%
 dev.off()
 
 # Calculate annual NetPsn
-
 annual_psn <- psn_dense_pines %>%
   select(Harv_scenario, Clim_scenario, Replicate, Year, Avg_Net_Psn) %>%
   group_by(Harv_scenario, Clim_scenario, Replicate, Year) %>%
@@ -206,7 +193,4 @@ ggplot(annual_psn, aes(x = Year, y = Avg_Annual_Psn)) +
   ylab("Annual Net Photosynthesis (g/m2)") +
   xlab(NULL)
 dev.off()
-  
-
-  
   

@@ -5,26 +5,13 @@ library(tidyr)
 library(dplyr)
 library(Kendall)
 
-mgmt.scenarios <- c(
-                    "210927_nomanag_current_rep1",
-                    "210927_nomanag_rcp45_rep1",
-                    "210927_nomanag_rcp85_rep1",
-                    "210927_conserv_current_rep1",
-                    "210927_conserv_rcp45_rep1",
-                    "210927_conserv_rcp85_rep1",
-                    "210927_proactive_current_rep1",
-                    "210927_proactive_rcp45_rep1",
-                    "210927_proactive_rcp85_rep1",
-                    "210927_proactiveplus_current_rep1",
-                    "210927_proactiveplus_rcp45_rep1",
-                    "210927_proactiveplus_rcp85_rep1"
-  )
+mgmt.scenarios <- c(...) # Folder names with each replicate (one replicate set)
 
-times <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95) #c(5, 15, 25, 35, 45, 55, 65, 75, 85, 95) # 
+times <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95) 
 
 ### SETUP
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 ### PINE PLANTATIONS MASK
 pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))

@@ -1,24 +1,13 @@
 # Analysis of forest types based on AGBiomass
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5) 
 
 ### SETUP ###
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 end_year <- 95
 times <- c(0, end_year)
@@ -118,5 +107,3 @@ mean_accross_rep <- change_perc_ft %>%
             SD_percentage_end = sd(Perc_time_end))
 
 write.table(mean_accross_rep, paste0(di, outputs_folder, "Forest_types_percentages_change.txt"), sep = ";")
-
-

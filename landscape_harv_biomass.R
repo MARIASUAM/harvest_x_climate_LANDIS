@@ -1,24 +1,13 @@
-# Analysis of harvested biomass 
+# Analysis of harvested biomass at landscape scale
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5) 
 
 ### SETUP ###
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 library(dplyr)
 library(ggplot2)
@@ -59,7 +48,7 @@ tot_by_time <- total %>%
             avg_tot_TotalBiomassHarvested_Mg_across_reps = mean(tot_TotalBiomassHarvested_Mg),
             sd_tot_TotalBiomassHarvested_Mg_across_reps = sd(tot_TotalBiomassHarvested_Mg))
   
-jpeg(file = paste(di, outputs_folder, "harv_sites_study_area.jpeg", sep = ""), width = 9, height = 6, units="in", res=300)
+jpeg(file = paste(di, outputs_folder, "harv_sites_whole_study_area.jpeg", sep = ""), width = 9, height = 6, units="in", res=300)
 ggplot(tot_by_time, aes(x = Time, y = avg_tot_HarvestedSites_across_reps, group = Scenario_name)) +
   geom_line(aes(linetype = Clim_scenario, color = Harv_scenario)) +
   geom_point(aes(color = Harv_scenario)) +
@@ -77,7 +66,6 @@ ggplot(tot_by_time, aes(x = Time, y = avg_tot_HarvestedSites_across_reps, group 
   ggtitle("Whole study area")
 dev.off()
 
-jpeg(file = paste(di, outputs_folder, "harv_biomass_study_area.jpeg", sep = ""), width = 9, height = 6, units="in", res=300)
 ggplot(tot_by_time, aes(x = Time, y = avg_tot_TotalBiomassHarvested_Mg_across_reps, group = Scenario_name)) +
   geom_line(aes(linetype = Clim_scenario, color = Harv_scenario)) +
   geom_point(aes(color = Harv_scenario)) +
@@ -93,7 +81,6 @@ ggplot(tot_by_time, aes(x = Time, y = avg_tot_TotalBiomassHarvested_Mg_across_re
   ylab("Harvested biomass (Mg)") +
   xlab("Time (years)") +
   ggtitle("Whole study area")
-dev.off()
 
 ### LOAD TABLES OF AGGREGATED HARVESTED BIOMASS ACROSS REPLICATES
 harv_biomass <- data.frame()

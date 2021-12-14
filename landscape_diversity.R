@@ -1,24 +1,14 @@
 # Analysis of diversity
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5) 
 
 ### SETUP ###
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
+
 end_year <- 95
 times <- c(0, end_year) # c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95)
 all_spp <-c("ppinaster", "pnigra", "phalepensis", "psylvestris", "qilex", "qfaginea", "qpyrenaica", "jcommunis", "joxycedrus", "tall", "medium", "short", "popnigra")
@@ -26,11 +16,6 @@ all_spp <-c("ppinaster", "pnigra", "phalepensis", "psylvestris", "qilex", "qfagi
 library(raster)
 library(dplyr)
 library(ggplot2)
-
-# library(rasterVis)
-# library(reshape)
-# library(fmsb)
-# library(tidyr)
 
 cols <- c("conserv" = "#33A02C", # dark green
           "proactive" = "#6A3D9A", # dark purple
@@ -49,7 +34,6 @@ active <- data.frame(mask = pines_mask[]) %>%
 tot_cells <- active$count
 
 ### GENERATE DIVERSITY TABLE
-# diversity_stack <- stack()
 agg_diversity <- data.frame()
 for (i in seq_along(mgmt.scenarios)) {
   for (j in seq_along(times)) {
@@ -77,11 +61,6 @@ for (i in seq_along(mgmt.scenarios)) {
                         ((temp_stack[[12]] / total) * (log(temp_stack[[12]] / total))),
                         ((temp_stack[[13]] / total) * (log(temp_stack[[13]] / total))), na.rm = TRUE)
         
-      # names(diversity) <- paste(strsplit(mgmt.scenarios[i], split = "_")[[1]][2], 
-      #                           strsplit(mgmt.scenarios[i], split = "_")[[1]][3], 
-      #                           "rep", replicates[k],
-      #                           "time", times[j], sep = "_")
-      # diversity_stack <- stack(diversity_stack, diversity)
       raster_to_df <- data.frame(Cell = 1:length(pines_mask[]),
                                Scenario = mgmt.scenarios[i],
                                Harv_scenario = strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][2],

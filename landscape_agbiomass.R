@@ -1,17 +1,6 @@
 # Analysis of AGB on aggregated tables
 
-mgmt.scenarios <- c("210927_conserv_current",
-                    "210927_conserv_rcp45",
-                    "210927_conserv_rcp85",
-                    "210927_nomanag_current",
-                    "210927_nomanag_rcp45",
-                    "210927_nomanag_rcp85",
-                    "210927_proactive_current",
-                    "210927_proactive_rcp45",
-                    "210927_proactive_rcp85",
-                    "210927_proactiveplus_current",
-                    "210927_proactiveplus_rcp45",
-                    "210927_proactiveplus_rcp85")
+mgmt.scenarios <- c(...) # Folder names with each scenario
 
 replicates <- c(1:5)
 
@@ -21,8 +10,8 @@ library(ggplot2)
 library(reshape2)
 library(lubridate)
 
-di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
-outputs_folder <- "210927_outputs/"
+di <- ".../experiments/" # Path to simulations folder
+outputs_folder <- "..." # Subfolder for outputs
 
 groups <- data.frame(Species = c("qfaginea", "qpyrenaica", "qilex", "ppinaster", "pnigra", "psylvestris", "phalepensis", "tall", "medium", "short", "jcommunis", "joxycedrus", "popnigra"),
                      Group = c("Oaks", "Oaks", "Oaks", "P. pinaster", "P. nigra", "P. sylvestris", "P. halepensis", "Other", "Other", "Other", "Other", "Other", "Other"))
@@ -30,14 +19,14 @@ groups <- data.frame(Species = c("qfaginea", "qpyrenaica", "qilex", "ppinaster",
 species <- data.frame(Species = c("qfaginea", "qpyrenaica", "qilex", "ppinaster", "pnigra", "psylvestris", "phalepensis", "tall", "medium", "short", "jcommunis", "joxycedrus", "popnigra"),
                       Species_latin = c("Q. faginea", "Q. pyrenaica", "Q. ilex", "P. pinaster", "P. nigra", "P. sylvestris", "P. halepensis", "Tall", "Medium", "Short", "J. communis", "J. oxycedrus", "Pop.nigra"))
 
-cols <- c('#91bfdb','#4575b4','#ffffbf', '#fee090','#fc8d59','#d73027')
-cols_species <- c("Q. faginea" = "#e0f3f8", 
-                  "Q. pyrenaica" = "#91bfdb",
-                  "Q. ilex" = "#4575b4", 
-                  "P. halepensis" = "#ffffbf",
-                  "P. nigra" = "#fee090",
-                  "P. pinaster" = "#fc8d59",
-                  "P. sylvestris" = "#d73027")
+cols <- c('#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628')# '#91bfdb','#4575b4','#ffffbf', '#fee090','#fc8d59','#d73027')
+cols_species <- c("Q. faginea" = '#e41a1c', # "#e0f3f8", 
+                  "Q. pyrenaica" = '#377eb8', # "#91bfdb",
+                  "Q. ilex" = '#4daf4a', # "#4575b4", 
+                  "P. halepensis" = '#984ea3', # "#ffffbf",
+                  "P. nigra" = '#ff7f00', # "#fee090",
+                  "P. pinaster" = '#ffff33', # "#fc8d59",
+                  "P. sylvestris" = '#a65628')# "#d73027")
 cols_pines <- c('#ffffbf', '#fee090','#fc8d59','#d73027')
   
 # AGB 
@@ -73,11 +62,10 @@ agb_dense_pines <- agb_dense_pines %>%
   left_join(Harv_scenario.labs) %>%
   left_join(Clim_scenario.labs)
 
-agb_dense_pines$Harv_scenario <- as.factor(agb_dense_pines$Harv_scenario)
-levels(agb_dense_pines$Harv_scenario)<- c('No Management', 'Conservative', 'Proactive', 'ProactivePlus')
-
-agb_dense_pines$Clim_scenario <- as.factor(agb_dense_pines$Clim_scenario)
-levels(agb_dense_pines$Clim_scenario) <- c("Current", "RCP4.5", "RCP8.5")
+agb_dense_pines$Harv_scenario <- factor(agb_dense_pines$Harv_scenario, 
+                                     levels=c("No Management", "Conservative", "Proactive", "ProactivePlus"))
+agb_dense_pines$Clim_scenario <- factor(agb_dense_pines$Clim_scenario, 
+                                     levels=c("Current", "RCP4.5", "RCP8.5"))
 
 # AGB stacked
 jpeg(file = paste(di, outputs_folder, "total_agb.jpeg", sep = ""), width=18, height=12, units="in", res=300)
@@ -130,7 +118,7 @@ agb_dense_pines %>%
   ggplot(aes(x = Time, y = Avg_mean_tnha_accross_rep)) +
   geom_line(aes(color = Species_latin)) +
   geom_point(aes(color = Species_latin)) +
-  geom_errorbar(aes(ymin = Avg_mean_tnha_accross_rep - SD_mean_tnha_accross_rep, 
+  geom_errorbar(aes(ymin = Avg_mean_tnha_accross_rep - SD_mean_tnha_accross_rep,
                     ymax = Avg_mean_tnha_accross_rep + SD_mean_tnha_accross_rep), width=.2,
                 position = position_dodge(.05)) +
   facet_wrap(Clim_scenario ~ Harv_scenario) + #
@@ -139,7 +127,7 @@ agb_dense_pines %>%
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
-        legend.title = element_blank()) +  
+        legend.title = element_blank()) +
   scale_color_manual(values = cols_species) +
   scale_linetype_manual(values = lines) +
   ylab("Mean biomass (tn/ha)") +
@@ -156,7 +144,7 @@ agb_dense_pines %>%
   ggplot(aes(x = Time, y = Avg_mean_tnha_accross_rep)) +
   geom_line(aes(color = Species_latin)) +
   geom_point(aes(color = Species_latin)) +
-  geom_errorbar(aes(ymin = Avg_mean_tnha_accross_rep - SD_mean_tnha_accross_rep, 
+  geom_errorbar(aes(ymin = Avg_mean_tnha_accross_rep - SD_mean_tnha_accross_rep,
                     ymax = Avg_mean_tnha_accross_rep + SD_mean_tnha_accross_rep), width=.2,
                 position = position_dodge(.05)) +
   facet_wrap(Clim_scenario ~ Harv_scenario) + #
@@ -165,7 +153,7 @@ agb_dense_pines %>%
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
-        legend.title = element_blank()) +  
+        legend.title = element_blank()) +
   scale_color_manual(values = cols_species) +
   scale_linetype_manual(values = lines) +
   ylab("Mean biomass (tn/ha)") +
@@ -200,7 +188,6 @@ agb_dense_pines %>%
   ylab("Mean biomass (tn/ha)") +
   xlab("Time")
 dev.off()
-
 
 jpeg(file = paste(di, outputs_folder, "agb_species_lines_others.jpeg", sep = ""), width=18, height=12, units="in", res=300)
 agb_dense_pines %>%
