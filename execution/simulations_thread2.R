@@ -1,23 +1,8 @@
-w_dir <- "G:/My Drive/proj_LANDIS/experiments/"
+w_dir <- "..." # Path to simulations folder (working directory)
 setwd(w_dir)
 
 # Create an object named after each folder where you want to run LANDIS-II.
-runs<- c("210927_proactiveplus_current_rep5")
-         # "210927_nomanag_current_rep1",
-         # "210927_nomanag_rcp45_rep1",
-         # "210927_nomanag_rcp85_rep1",
-         # "210927_nomanag_current_rep2",
-         # "210927_nomanag_rcp45_rep2",
-         # "210927_nomanag_rcp85_rep2",
-         # "210927_nomanag_current_rep3",
-         # "210927_nomanag_rcp45_rep3",
-         # "210927_nomanag_rcp85_rep3",
-         # "210927_nomanag_current_rep4",
-         # "210927_nomanag_rcp45_rep4",
-         # "210927_nomanag_rcp85_rep4",
-         # "210927_nomanag_current_rep5",
-         # "210927_nomanag_rcp45_rep5",
-         # "210927_nomanag_rcp85_rep5") 
+runs <- c(...) # Folder names with each replicate
 
 # Looping through folder names to run the batch files 
 for(i in 1:length(runs)){ 
