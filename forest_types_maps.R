@@ -6,8 +6,8 @@ mgmt.scenarios <- c(...) # Folder names with each scenario
 replicates <- c(1:5) 
 
 ### SETUP ###
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 end_year <- 95
 times <- c(0, end_year)
@@ -51,27 +51,30 @@ for (i in seq_along(mgmt.scenarios)) {
       prop_shrubs <- shrubs_agb / total_agb
       
       # Extract to data frame
-      raster_to_df <- data.frame(Cell = 1:length(pines_mask[]),
+      raster_to_df <- data.frame(
+                                 # Cell = 1:length(pines_mask[]),
+                                 Cell = 1:length(ref_layer[]),
                                  Scenario = paste(strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][2], strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][3], sep = "_"),
                                  Harv_scenario = strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][2],
                                  Clim_scenario = strsplit(as.character(mgmt.scenarios[i]), split = "_")[[1]][3],
                                  Time = times[j],
                                  Replicate = replicates[h],
-                                 Mask = pines_mask[],
+                                 # Mask = pines_mask[], # Pine plantations mask
+                                 Mask = ref_layer[], # Full study area
                                  Total_gm2 = total_agb[],
                                  Prop_pines = prop_pines[],
                                  Prop_oaks = prop_oaks[],
                                  Prop_shrubs = prop_shrubs[]) %>%
         # Reclassify cells by forest types
         mutate(Forest_type_code = ifelse(is.na(Mask) == TRUE, NA,
-                                    ifelse(Total_gm2 == 0, 7, # Empty cells - set a higher threshold?
-                                      ifelse(Prop_pines >= 0.9, 1, # "Pure pines", # Mainly pines
-                                        ifelse(Prop_oaks >= 0.9, 3, # "Pure oaks", # Mainly oaks
-                                          ifelse(Prop_shrubs >= 0.9, 5, # "Shrublands/Shrub-dominated", 
-                                            ifelse(Prop_pines >= 0.51, 2, # "Pine-dominated",
-                                              ifelse(Prop_oaks >= 0.51, 4, # "Oak-dominated",
-                                                ifelse(Prop_shrubs >= 0.51, 5, # "Shrublands/Shrub-dominated",
-                                                  6))))))))) %>% # "Mixed"
+                                   ifelse(Total_gm2 == 0, 7, # Empty cells - set a higher threshold?
+                                    ifelse(Prop_pines >= 0.9, 1, # "Pure pines", # Mainly pines
+                                      ifelse(Prop_oaks >= 0.9, 3, # "Pure oaks", # Mainly oaks
+                                        ifelse(Prop_shrubs >= 0.9, 5, # "Shrublands", 
+                                          ifelse(Prop_pines >= 0.5, 2, # "Pine-dominated",
+                                            ifelse(Prop_oaks >= 0.5, 4, # "Oak-dominated",
+                                              ifelse(Prop_shrubs >= 0.5, 5, # "Shrublands",
+                                                6))))))))) %>% # "Mixed no dominance"
         arrange(Cell)
       
       # Transform back to raster
@@ -88,7 +91,7 @@ for (i in seq_along(mgmt.scenarios)) {
                               strsplit(mgmt.scenarios[i], split = "_")[[1]][2], "_",
                               strsplit(mgmt.scenarios[i], split = "_")[[1]][3], "_",
                               "time_", times[j],
-                              "_rep_", replicates[h], ".tif", sep = ""))    
+                              "_rep_", replicates[h], "new_mixed_class_full_aoi.tif", sep = ""), overwrite = TRUE)    
       }
   }
 }

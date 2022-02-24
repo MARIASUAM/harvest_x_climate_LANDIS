@@ -1,0 +1,4 @@
+LandisData	PnETGenericParameters
+PnETGenericParameters		Value
+>> ------------------		----- << Default values
+MaxPest				1.0

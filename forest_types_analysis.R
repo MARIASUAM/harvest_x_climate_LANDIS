@@ -6,8 +6,8 @@ mgmt.scenarios <- c(...) # Folder names with each scenario
 replicates <- c(1:5) 
 
 ### SETUP ###
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 end_year <- 95
 times <- c(0, end_year)
@@ -59,13 +59,13 @@ for (i in seq_along(mgmt.scenarios)) {
       # Reclassify cells by forest types
       classification <- raster_to_df %>%
         mutate(Forest_type_code = ifelse(Total_gm2 == 0, 7, # Empty cells - set a higher threshold?
-                                   ifelse(Prop_pines >= 0.9, 1, # "Pure pines", # Mainly pines
-                                    ifelse(Prop_oaks >= 0.9, 3, # "Pure oaks", # Mainly oaks
-                                     ifelse(Prop_shrubs >= 0.9, 5, # "Shrublands/Shrub-dominated", 
-                                      ifelse(Prop_pines >= 0.51, 2, # "Pine-dominated",
-                                       ifelse(Prop_oaks >= 0.51, 4, # "Oak-dominated",
-                                        ifelse(Prop_shrubs >= 0.51, 5, # "Shrublands/Shrub-dominated",
-                                         6)))))))) # "Mixed"
+                                         ifelse(Prop_pines >= 0.9, 1, # "Pure pines", # Mainly pines
+                                                ifelse(Prop_oaks >= 0.9, 3, # "Pure oaks", # Mainly oaks
+                                                       ifelse(Prop_shrubs >= 0.9, 5, # "Shrublands", 
+                                                              ifelse(Prop_pines >= 0.5, 2, # "Pine-dominated",
+                                                                     ifelse(Prop_oaks >= 0.5, 4, # "Oak-dominated",
+                                                                            ifelse(Prop_shrubs >= 0.5, 5, # "Shrublands",
+                                                                                   6))))))))
       
       # Calculate percentage of the landscape covered by each forest type
       perc_ft <- classification %>%
@@ -94,6 +94,7 @@ change_perc_ft <- ft_df %>%
   dplyr::select(-Time, -Percentage) %>%
   left_join(perc_ft_time0) %>%
   mutate(Perc_of_change = Perc_time_end - Perc_time0)
+write.table(change_perc_ft, paste0(di, outputs_folder, "Forest_types_total_percentages_new_mixed_class.txt"), sep = ";")
 
 # Calculate mean across replicates
 mean_accross_rep <- change_perc_ft %>%
@@ -106,4 +107,4 @@ mean_accross_rep <- change_perc_ft %>%
             Mean_percentage_end = mean(Perc_time_end),
             SD_percentage_end = sd(Perc_time_end))
 
-write.table(mean_accross_rep, paste0(di, outputs_folder, "Forest_types_percentages_change.txt"), sep = ";")
+write.table(mean_accross_rep, paste0(di, outputs_folder, "Forest_types_percentages_change_new_mixed_class.txt"), sep = ";")

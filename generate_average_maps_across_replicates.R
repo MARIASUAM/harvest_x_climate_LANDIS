@@ -5,17 +5,18 @@ library(tidyr)
 library(dplyr)
 
 # Define scenarios folders and number of replicates
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_proactive_rcp45") # Folder names with each scenario
 
 replicates <- c(1:5)
 
 ### SETUP
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "G:/Mi unidad/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 times <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95)
 months <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
-
+spp <- c("qfaginea", "qpyrenaica", "qilex", "ppinaster", "pnigra", "psylvestris", "phalepensis")
+  
 # Total AGB
 for (i in seq_along(mgmt.scenarios)){
   for (j in seq_along(times)){
@@ -124,3 +125,23 @@ for (i in seq_along(mgmt.scenarios)){
                 paste(di, outputs_folder, "Harv_biomass_maps/", mgmt.scenarios[i], "_Harv_biomass_across_replicates_", harv_times[j], ".asc", sep = ""))
   }
 }
+
+# AGB by species
+for (i in seq_along(mgmt.scenarios)){
+  for (j in seq_along(times)){
+    for (k in seq_along(spp)) {
+      replicate_stack <- stack()
+      for (h in seq_along(replicates)){
+        temp <- raster(paste(di, mgmt.scenarios[i], "_rep", h, "/output/agbiomass/", spp[k], "/AGBiomass", times[j], ".img", sep = ""))
+        replicate_stack <- stack(replicate_stack, temp)
+    }
+    avg_among_replicates <- calc(replicate_stack, mean)
+    
+    names(avg_among_replicates) <- paste("time", times[j], sep = "_")
+    
+    writeRaster(avg_among_replicates,
+                paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_AGB_", spp[k], "_", times[j], ".asc", sep = ""), overwrite = TRUE)
+    }
+  }
+}
+

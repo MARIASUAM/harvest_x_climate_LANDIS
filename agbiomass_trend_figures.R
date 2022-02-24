@@ -7,17 +7,28 @@ library(rasterVis)
 mgmt.scenarios <- c(...) # Folder names with each scenario
 
 # Labels
-labels <- data.frame(Scenario = c(...), # Folder names with each scenario
-                     Harv_sce = c("NoManagement", "Conservative", "Proactive", "ProactivePlus",
-                                  "NoManagement", "Conservative", "Proactive", "ProactivePlus",
-                                  "NoManagement", "Conservative", "Proactive", "ProactivePlus"),
+labels <- data.frame(Scenario = c("211129_nomanag_current",
+                                  "211129_conserv_current",
+                                  "211129_proactive_current",
+                                  "211129_proactiveplus_current",
+                                  "211129_nomanag_rcp45",
+                                  "211129_conserv_rcp45",
+                                  "211129_proactive_rcp45",
+                                  "211129_proactiveplus_rcp45",
+                                  "211129_nomanag_rcp85",
+                                  "211129_conserv_rcp85",
+                                  "211129_proactive_rcp85",
+                                  "211129_proactiveplus_rcp85"), # Folder names with each scenario
+                     Harv_sce = c("Non-management", "Conservative", "Proactive", "Proactive-plus",
+                                  "Non-management", "Conservative", "Proactive", "Proactive-plus",
+                                  "Non-management", "Conservative", "Proactive", "Proactive-plus"),
                      Clim_sce = c("Current", "Current", "Current", "Current",
                                   "RCP4.5", "RCP4.5", "RCP4.5", "RCP4.5", 
                                   "RCP8.5", "RCP8.5", "RCP8.5", "RCP8.5"))
 
 ### SETUP
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 ### PINE PLANTATIONS MASK
 pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))
@@ -44,10 +55,10 @@ gplot(taus) +
   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("") +
   ylab("") +
   xlab("")
@@ -70,10 +81,10 @@ gplot(pvalues_reclass) +
   coord_equal() +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("") +
   ylab("") +
   xlab("")
@@ -102,10 +113,10 @@ gplot(taus_oaks) +
   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Oaks AGB") +
   ylab("") +
   xlab("")
@@ -128,10 +139,10 @@ gplot(pvalues_reclass_oaks) +
   coord_equal() +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Oaks AGB") +
   ylab("") +
   xlab("")
@@ -160,10 +171,10 @@ gplot(taus_pines) +
   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Pines AGB") +
   ylab("") +
   xlab("")
@@ -186,10 +197,10 @@ gplot(pvalues_reclass_pines) +
   coord_equal() +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Pines AGB") +
   ylab("") +
   xlab("")
@@ -218,10 +229,10 @@ gplot(taus_oaks) +
   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Oaks AGB - first cohort") +
   ylab("") +
   xlab("")
@@ -244,10 +255,10 @@ gplot(pvalues_reclass_oaks) +
   coord_equal() +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Oaks AGB - first cohort") +
   ylab("") +
   xlab("")
@@ -276,10 +287,10 @@ gplot(taus_pines) +
   scale_fill_gradient2(low = '#d7191c', mid = '#ffffbf', high = '#2c7bb6', na.value = "transparent") +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Pines AGB - first cohort") +
   ylab("") +
   xlab("")
@@ -302,11 +313,12 @@ gplot(pvalues_reclass_pines) +
   coord_equal() +
   theme_classic() +
   theme(legend.position = "bottom",
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank()) +
+        axis.text = element_blank(),
+        legend.title = element_blank(),
+        text = element_text(size = 24),
+        legend.key.size = unit(1, "cm")) +
   ggtitle("Pines AGB - first cohort") +
   ylab("") +
   xlab("")
 dev.off()
+

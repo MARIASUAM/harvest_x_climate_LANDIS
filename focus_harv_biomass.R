@@ -1,13 +1,24 @@
 # Maps of harvested biomass
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_conserv_current",
+                    "211129_conserv_rcp45",
+                    "211129_conserv_rcp85",
+                    "211129_nomanag_current",
+                    "211129_nomanag_rcp45",
+                    "211129_nomanag_rcp85",
+                    "211129_proactive_current",
+                    "211129_proactive_rcp45",
+                    "211129_proactive_rcp85",
+                    "211129_proactiveplus_current",
+                    "211129_proactiveplus_rcp45",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 harv_times <- c(10, 20, 30, 40, 50, 60, 70, 80, 90)
 
 ### SETUP ###
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 library(raster)
 library(dplyr)

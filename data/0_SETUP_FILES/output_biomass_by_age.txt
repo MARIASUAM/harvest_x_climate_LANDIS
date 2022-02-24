@@ -1,0 +1,19 @@
+LandisData "Output Biomass-by-Age"
+
+Timestep 5
+
+MapNames ./output/biomas-by-age/{species}-{ageclass}-{timestep}.img
+
+Species 	qilex			ageclass1(1-5) ageclass2(6-10)
+			qpyrenaica		ageclass1(1-5) ageclass2(6-10)
+			qfaginea		ageclass1(1-5) ageclass2(6-10)
+			ppinaster		ageclass1(1-5) ageclass2(6-10)
+			pnigra			ageclass1(1-5) ageclass2(6-10)
+			psylvestris		ageclass1(1-5) ageclass2(6-10)
+			phalepensis		ageclass1(1-5) ageclass2(6-10)
+			popnigra 		ageclass1(1-5)
+			jcommunis		ageclass1(1-5)
+			joxycedrus		ageclass1(1-5)
+			short			ageclass1(1-5)
+			medium			ageclass1(1-5)
+			tall			ageclass1(1-5)

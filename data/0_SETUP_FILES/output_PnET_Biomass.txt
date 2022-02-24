@@ -1,0 +1,27 @@
+LandisData "Output-PnET"
+
+Timestep  5
+Species All
+
+>>------- BIOMASS -------------------------------------------------------------------
+AbovegroundBiomass 			./output/agbiomass/{species}/AGBiomass{timestep}.img		<<aboveground wood and foliage
+BelowgroundBiomass			./output/bgbiomass/{species}/BGBiomass{timestep}.img
+Biomass 					./output/biomass/{species}/Biomass{timestep}.img
+
+>>------- COHORTS AND AGE -----------------------------------------------------------
+AgeDistribution 			./output/AgeDist/Age_{timestep}.img
+CohortsPerSpecies 			./output/CohortsPerspecies/{species}/cohorts_{timestep}.img
+
+>>------- PHOTOSYNTHESIS ------------------------------------------------------------
+MonthlyNetPsn 				./output/MonthlyNetPsn/MonthlyNetPsn_{timestep}.img  	
+MonthlyGrossPsn 			./output/MonthlyGrossPsn/MonthlyGrossPsn_{timestep}.img  		
+
+>>------- TABLES -------------------------------------------------------------------
+CohortBalance 		    	./output/TotalCohorts.txt
+MortalityTable				./output/MortalityTable.txt
+EstablishmentTable      	./output/Establishment/EstablishTable.txt 
+
+>> ------ ADDITIONAL OUTPUTS FROM OTHER EXTENSIONS ---------------------------------
+>> COHORT STATS: Site Richness, Site Count, Species Richness, Age min, med, sd
+>> BIOMASS HARVEST: Prescription maps, HarvestedBiomass maps, Summary table, Events log
+>> BIOMASS BY AGE: age classes 1-10 (all spp.), 10-20 (oaks and pines)

@@ -1,5 +1,5 @@
 ---
-title: "Explore minimum temperature timeseries"
+title: "Explore mean temperature timeseries"
 output: word_document
 editor_options: 
   chunk_output_type: console

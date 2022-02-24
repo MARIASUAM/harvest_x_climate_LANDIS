@@ -1,0 +1,15 @@
+LandisData "Output Cohort Statistics"
+
+Timestep 5
+
+SpeciesAgeStats
+MapNames ./output/cohort-stats/{species}-{statistic}-{timestep}.img
+
+SiteAgeStats
+MapNames ./output/cohort-stats/AGE-{statistic}-{timestep}.img
+RICH << number of age classes (different species together)
+COUNT << total number of age classes (different species separately)
+
+SiteSpeciesStats
+MapNames ./output/cohort-stats/SPP-{statistic}-{timestep}.img
+RICH << count of species in cell

@@ -11,8 +11,8 @@ replicates <- c(1:5)
 times <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95) 
 
 ### SETUP
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 ### PINE PLANTATIONS MASK
 pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))
@@ -25,6 +25,7 @@ for (i in seq_along(mgmt.scenarios)){
   agb_stack <- stack()
   for (j in seq_along(times)){
     temp <- raster(paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_AGB_avg_across_replicates_", times[j], ".asc", sep = ""))
+    # temp <- raster(paste(di, mgmt.scenarios[i], "/results/Total_AGB_", times[j], ".asc", sep = "")) # For single replicates
     names(temp) <- paste0("time_", times[j])
     agb_stack <- stack(agb_stack, temp)
   }
@@ -39,16 +40,18 @@ for (i in seq_along(mgmt.scenarios)){
               paste(di, outputs_folder, "AGB_Kendall/", mgmt.scenarios[i], "_kendall_results_pvalue.asc", sep = ""), overwrite = TRUE)
 }
 
-# Create stack and calculate trend in AGB by species groups (run)
+# Create stack and calculate trend in AGB by species groups
 for (i in seq_along(mgmt.scenarios)){
   agb_stack_oaks <- stack()
   agb_stack_pines <- stack()
   for (j in seq_along(times)){
     temp_oaks <- raster(paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_Oaks_AGB_avg_across_replicates_", times[j], ".asc", sep = ""))
+    # temp_oaks <- raster(paste(di, mgmt.scenarios[i], "/results/Oaks_AGB_", times[j], ".asc", sep = "")) # For single replicates
     names(temp_oaks) <- paste0("time_", times[j])
     agb_stack_oaks <- stack(agb_stack_oaks, temp_oaks)
 
     temp_pines <- raster(paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_Pines_AGB_avg_across_replicates_", times[j], ".asc", sep = ""))
+    # temp_pines <- raster(paste(di, mgmt.scenarios[i], "/results/Pines_AGB_", times[j], ".asc", sep = "")) # For single replicates
     names(temp_pines) <- paste0("time_", times[j])
     agb_stack_pines <- stack(agb_stack_pines, temp_pines)
   }
@@ -80,10 +83,12 @@ for (i in seq_along(mgmt.scenarios)){
   agb_stack_pines <- stack()
   for (j in seq_along(times)){
     temp_oaks <- raster(paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_Oaks_first_cohort_AGB_avg_across_replicates_", times[j], ".asc", sep = ""))
+    # temp_oaks <- raster(paste(di, mgmt.scenarios[i], "/results/Oaks_first_cohort_AGB_", times[j], ".asc", sep = "")) # For single replicates
     names(temp_oaks) <- paste0("time_", times[j])
     agb_stack_oaks <- stack(agb_stack_oaks, temp_oaks)
 
     temp_pines <- raster(paste(di, outputs_folder, "AGB_maps/", mgmt.scenarios[i], "_Pines_first_cohort_AGB_avg_across_replicates_", times[j], ".asc", sep = ""))
+    # temp_pines <- raster(paste(di, mgmt.scenarios[i], "/results/Pines_first_cohort_AGB_", times[j], ".asc", sep = "")) # For single replicates
     names(temp_pines) <- paste0("time_", times[j])
     agb_stack_pines <- stack(agb_stack_pines, temp_pines)
   }
