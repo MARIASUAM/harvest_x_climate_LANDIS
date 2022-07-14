@@ -123,6 +123,26 @@ prec <- ggplot(data = avg_temp, aes(color = scenario)) +
 ggarrange(temp, prec,labels = c("A", "B"), ncol = 1, nrow = 2)
 dev.off()
 
+# One-month plot
+jpeg(file = paste(di, "MIROC5_reg3_temp_february.jpeg", sep = ""), width = 6, height = 6, units="in", res=300)
+series %>%
+  filter(Month == 2) %>%
+  ggplot(aes(color = scenario)) +
+  geom_point(aes(x = Year, y = Tavg_C), size = 0.5, alpha = 0.5) +
+  geom_line(aes(x = Year, y = Tavg_C), size = 0.3, linetype = "longdash") +
+  stat_smooth(aes(x = Year, y = Tavg_C), method = "loess") +
+  xlim(2005, 2100) +
+  theme_classic() +
+  scale_y_continuous(name = "Average temperature (°C)") +
+  theme(legend.position = "bottom",
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) +
+  scale_color_manual(values = cols) +
+  scale_linetype_manual(values = lines)
+dev.off()
+
 # CESM model
 # Load data and fetch labels
 files <- list.files(di_inputs, pattern = "*_CESM1_reg3")
@@ -140,7 +160,7 @@ series <- series %>%
   left_join(scenario.labs) %>%
   select(-scenario_original)
 
-# Calculate annual means for PAR, CO2 and temperaures
+# Calculate annual means for PAR, CO2 and temperatures
 annual_means <- series %>%
   select(scenario, Year, PAR, CO2, Tavg_C, TMin, TMax) %>%
   group_by(scenario, Year) %>%

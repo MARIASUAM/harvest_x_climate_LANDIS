@@ -68,7 +68,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMin_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMin") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -76,7 +76,7 @@ annual_means %>%
   xlim(1950, 2100) +
   ylim(-2, 25) +
   ylab("Annual minimum temperature (ºC)") +
-  ggtitle("Region 1") +
+  ggtitle("Subhumid") + # Old: Region 1
   theme_classic() +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
@@ -86,7 +86,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_TMax_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMax") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -94,7 +94,7 @@ annual_means %>%
   xlim(1950, 2100) +
   ylim(-2, 25) +
   ylab("Annual maximum temperature (ºC)") +
-  ggtitle("Region 1") +
+  ggtitle("Subhumid") + # Old: Region 1
   theme_classic() +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
@@ -104,14 +104,14 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg1_CO2.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_CO2_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "CO2") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
   geom_line() +
   xlim(1950, 2100) +
   ylab("Average annual CO2 (ppm)") +
-  ggtitle("Region 1") +
+  # ggtitle("Region 1") +
   theme_classic() +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
@@ -121,17 +121,18 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg1_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg1_PAR_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
-  filter(variable == "PAR") %>%
+  filter(variable == "PAR",
+         scenario == "Current") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
   geom_line() +
   xlim(1950, 2100) +
   ylim(390, 470) +
   ylab("Annual PAR (umol/m2·s)") +
-  ggtitle("Region 1") +
+  ggtitle("Subhumid") + # Old: Region 1
   theme_classic() +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
@@ -145,7 +146,7 @@ annual_sums <- series %>%
   summarise_all(sum) %>%
   melt(id.vars = c("scenario", "Year"))
 
-jpeg(file = paste(di, "outputs/corrected_MIROC5_reg1_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/corrected_MIROC5_reg1_Prec_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_sums %>%
   filter(variable == "Prec") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -155,7 +156,7 @@ annual_sums %>%
   xlim(1950, 2100) +
   ylim(150, 1300) +
   ylab("Annual precipitation (mm)") +
-  ggtitle("Region 1") +
+  ggtitle("Subhumid") + # Old: Region 1
   theme_classic() +
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
@@ -206,7 +207,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMin_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMin") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -215,7 +216,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual minimum temperature (ºC)") +
   theme_classic() +
-  ggtitle("Region 2") +
+  ggtitle("Xeric") + #old: Region 2
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -224,7 +225,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_TMax_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMax") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -233,7 +234,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual maximum temperature (ºC)") +
   theme_classic() +
-  ggtitle("Region 2") +
+  ggtitle("Xeric") + #old: Region 2
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -257,17 +258,18 @@ annual_means %>%
         legend.title = element_blank()) +
   scale_color_manual(values = cols)
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg2_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg2_PAR_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
-  filter(variable == "PAR") %>%
+  filter(variable == "PAR",
+           scenario == "Current") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
   geom_line() +
   xlim(1950, 2100) +
   ylab("Annual PAR (umol/m2·s)") +
   theme_classic() +
-  ggtitle("Region 2") +
+  ggtitle("Xeric") + #old: Region 2
   ylim(390, 470) +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
@@ -281,7 +283,7 @@ annual_sums <- series %>%
   summarise_all(sum) %>%
   melt(id.vars = c("scenario", "Year"))
 
-jpeg(file = paste(di, "outputs/corrected_MIROC5_reg2_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/corrected_MIROC5_reg2_Prec_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_sums %>%
   filter(variable == "Prec") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -292,7 +294,7 @@ annual_sums %>%
   ylim(150, 1300) +
   ylab("Annual precipitation (mm)") +
   theme_classic() +
-  ggtitle("Region 2") +
+  ggtitle("Xeric") + #old: Region 2
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -342,7 +344,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMin_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMin") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -351,7 +353,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual minimum temperature (ºC)") +
   theme_classic() +
-  # ggtitle("Region 3") +
+  ggtitle("Mesic") + #Region 3
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -360,7 +362,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_TMax_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMax") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -369,7 +371,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual maximum temperature (ºC)") +
   theme_classic() +
-  # ggtitle("Region 3") +
+  ggtitle("Mesic") + #Region 3
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -393,17 +395,18 @@ annual_means %>%
         legend.title = element_blank()) +
   scale_color_manual(values = cols)
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg3_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg3_PAR_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
-  filter(variable == "PAR") %>%
+  filter(variable == "PAR",
+           scenario == "Current") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
   geom_line() +
   xlim(1950, 2100) +
   ylab("Annual PAR (umol/m2·s)") +
   theme_classic() +
-  # ggtitle("Region 3") +
+  ggtitle("Mesic") + #Region 3
   ylim(390, 470) +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
@@ -417,7 +420,7 @@ annual_sums <- series %>%
   summarise_all(sum) %>%
   melt(id.vars = c("scenario", "Year"))
 
-jpeg(file = paste(di, "outputs/corrected_MIROC5_reg3_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/corrected_MIROC5_reg3_Prec_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_sums %>%
   filter(variable == "Prec") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -428,7 +431,7 @@ annual_sums %>%
   ylim(150, 1300) +
   ylab("Annual precipitation (mm)") +
   theme_classic() +
-  # ggtitle("Region 3") +
+  ggtitle("Mesic") + #Region 3
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -479,7 +482,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMin_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMin_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMin") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -488,7 +491,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual minimum temperature (ºC)") +
   theme_classic() +
-  ggtitle("Region 4") +
+  ggtitle("Alpine") + #old: Region 4
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -497,7 +500,7 @@ annual_means %>%
   scale_color_manual(values = cols)
 dev.off()
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMax_C.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_TMax_C_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
   filter(variable == "TMax") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -506,7 +509,7 @@ annual_means %>%
   ylim(-2, 25) +
   ylab("Annual maximum temperature (ºC)") +
   theme_classic() +
-  ggtitle("Region 4") +
+  ggtitle("Alpine") + #old: Region 4
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -530,17 +533,18 @@ annual_means %>%
         legend.title = element_blank()) +
   scale_color_manual(values = cols)
 
-jpeg(file = paste(di, "outputs/", "MIROC5_reg4_PAR.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/", "MIROC5_reg4_PAR_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_means %>%
-  filter(variable == "PAR") %>%
+  filter(variable == "PAR",
+           scenario == "Current") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
   geom_line() +
   xlim(1950, 2100) +
   ylim(390, 470) +
   ylab("Annual PAR (umol/m2·s)") +
   theme_classic() +
-  ggtitle("Region 4") +
-  theme(legend.position = "bottom",
+  ggtitle("Alpine") + #old: Region 4
+  theme(legend.position = "none",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
         legend.text = element_text(size = 14),
@@ -554,7 +558,7 @@ annual_sums <- series %>%
   summarise_all(sum) %>%
   melt(id.vars = c("scenario", "Year"))
 
-jpeg(file = paste(di, "outputs/corrected_MIROC5_reg4_Prec.jpeg", sep = ""), width=6, height=4, units="in", res=300)
+jpeg(file = paste(di, "outputs/corrected_MIROC5_reg4_Prec_revised.jpeg", sep = ""), width=6, height=4, units="in", res=300)
 annual_sums %>%
   filter(variable == "Prec") %>%
   ggplot(aes(x = Year, y = value, color = scenario)) +
@@ -565,7 +569,7 @@ annual_sums %>%
   ylim(150, 1300) +
   ylab("Annual precipitation (mm)") +
   theme_classic() +
-  ggtitle("Region 4") +
+  ggtitle("Alpine") + #old: Region 4
   theme(legend.position = "bottom",
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),

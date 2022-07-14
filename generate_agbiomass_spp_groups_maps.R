@@ -2,10 +2,11 @@
 
 library(raster)
 
-mgmt.scenarios <- c(...) # Folder names with each replicate
+mgmt.scenarios <- c("211129_proactive_rcp45_rep6",
+                    "211129_proactive_rcp85_rep6") # Folder names with each replicate
 
 ### SETUP
-di <- ".../experiments/" # Path to simulations folder
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
 
 all_spp <-c("ppinaster", "pnigra", "phalepensis", "psylvestris", 
             "qilex", "qfaginea", "qpyrenaica", 

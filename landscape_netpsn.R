@@ -1,6 +1,20 @@
 # Analysis on aggregated tables
 
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_nomanag_current",
+                    "211129_nomanag_rcp45",
+                    "211129_nomanag_rcp85",
+                    
+                    "211129_conserv_current",
+                    "211129_conserv_rcp45",
+                    "211129_conserv_rcp85",
+                    
+                    "211129_proactive_current",
+                    "211129_proactive_rcp45",
+                    "211129_proactive_rcp85",
+                    
+                    "211129_proactiveplus_current",
+                    "211129_proactiveplus_rcp45",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 replicates <- c(1:5)
 
@@ -110,7 +124,7 @@ years_avg <- acc_rep %>%
   summarise(Mean_accros_years = mean(Mean_acc_rep),
             SD_accros_years = sd(Mean_acc_rep))
 
-jpeg(file = paste(di, outputs_folder, "avg_netpsn_0-10_85-95.jpeg", sep = ""), width=12, height=8, units="in", res=300)
+# jpeg(file = paste(di, outputs_folder, "avg_netpsn_0-10_85-95_revised.jpeg", sep = ""), width=12, height=8, units="in", res=300)
 years_avg %>%
   ggplot(aes(x = months_num, y = Mean_accros_years, group = Period)) +
   geom_line(aes(color = Period, lty = Period)) +
@@ -126,14 +140,15 @@ years_avg %>%
         axis.text.y = element_text(size = 12),
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 12)) +
-  scale_x_discrete("Month", limits = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
+  scale_x_continuous("Month", breaks = c(2,4,6,8,10,12), labels = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec")) + #
+  # scale_x_discrete("Month", limits = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) + #
   scale_y_continuous("Avg Net Photosynthesis (g/m2)") +
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   ggtitle("")
-dev.off()
+# dev.off()
 
-jpeg(file = paste(di, outputs_folder, "avg_netpsn_0-10_85-95_nomanag.jpeg", sep = ""), width=9, height=4, units="in", res=300)
+# jpeg(file = paste(di, outputs_folder, "avg_netpsn_0-10_85-95_nomanag_revised.jpeg", sep = ""), width=9, height=4, units="in", res=300)
 years_avg %>%
   filter(Harv_scenario == "Non-management") %>%
   ggplot(aes(x = months_num, y = Mean_accros_years, group = Period)) +
@@ -142,7 +157,7 @@ years_avg %>%
   geom_ribbon(aes(ymin = Mean_accros_years - SD_accros_years,
                   ymax = Mean_accros_years + SD_accros_years, x = months_num, 
                   fill = Period), alpha = 0.3)+
-  facet_grid(Harv_scenario ~ Clim_scenario) +
+  facet_grid(. ~ Clim_scenario) + # Harv_scenario ~ Clim_scenario
   theme_classic() +
   theme(legend.position = "bottom",
         legend.title = element_blank(),
@@ -150,12 +165,13 @@ years_avg %>%
         axis.text.y = element_text(size = 12),
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 12)) +
-  scale_x_discrete("Month", limits = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
+  scale_x_continuous("Month", breaks = c(2,4,6,8,10,12), labels = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec")) + #
+  # scale_x_discrete("Month", limits = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) + #
   scale_y_continuous("Avg Net Photosynthesis (g/m2)") +
   scale_color_manual(values = cols) +
   scale_fill_manual(values = cols) +
   ggtitle("")
-dev.off()
+# dev.off()
 
 # Calculate annual Psn based on area
 tot_psn <- years_avg %>%
@@ -163,7 +179,8 @@ tot_psn <- years_avg %>%
   group_by(Harv_scenario, Clim_scenario, Period) %>%
   summarise(tot_psn = sum(Mean_accros_years)) %>%
   spread(Period, tot_psn) %>%
-  mutate(net_growth = End - Beginning)
+  mutate(net_growth = End - Beginning,
+         net_growth_pc = net_growth * 100 / End)
 
 # Change beginning period: years 5, 10 and 15
 # years_avg <- acc_rep %>%

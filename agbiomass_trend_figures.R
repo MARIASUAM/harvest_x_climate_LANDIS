@@ -4,7 +4,8 @@ library(ggplot2)
 library(raster)
 library(rasterVis)
 
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_nomanag_current",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 # Labels
 labels <- data.frame(Scenario = c("211129_nomanag_current",
@@ -117,7 +118,7 @@ gplot(taus_oaks) +
         legend.title = element_blank(),
         text = element_text(size = 24),
         legend.key.size = unit(1, "cm")) +
-  ggtitle("Oaks AGB") +
+  # ggtitle("Oaks AGB") +
   ylab("") +
   xlab("")
 dev.off()
@@ -175,7 +176,7 @@ gplot(taus_pines) +
         legend.title = element_blank(),
         text = element_text(size = 24),
         legend.key.size = unit(1, "cm")) +
-  ggtitle("Pines AGB") +
+  # ggtitle("Pines AGB") +
   ylab("") +
   xlab("")
 dev.off()

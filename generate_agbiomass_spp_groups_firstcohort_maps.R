@@ -5,7 +5,7 @@ library(raster)
 mgmt.scenarios <- c(...) # Folder names with each replicate
 
 ### SETUP
-di <- ".../experiments/" # Path to simulations folder
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
 
 oaks_and_pines <- c("ppinaster", "pnigra", "phalepensis", "psylvestris", 
                     "qilex", "qfaginea", "qpyrenaica")

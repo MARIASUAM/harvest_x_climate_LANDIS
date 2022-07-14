@@ -1,6 +1,17 @@
 # Analysis of cohort statistics on aggregated tables
 
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_conserv_current",
+                    "211129_conserv_rcp45",
+                    "211129_conserv_rcp85",
+                    "211129_nomanag_current",
+                    "211129_nomanag_rcp45",
+                    "211129_nomanag_rcp85",
+                    "211129_proactive_current",
+                    "211129_proactive_rcp45",
+                    "211129_proactive_rcp85",
+                    "211129_proactiveplus_current",
+                    "211129_proactiveplus_rcp45",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 replicates <- c(1:5)
 
@@ -10,8 +21,8 @@ library(ggplot2)
 library(reshape2)
 library(lubridate)
 
-di <- ".../experiments/" # Path to simulations folder
-outputs_folder <- "..." # Subfolder for outputs
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
+outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 cols <- c("conserv" = "#33A02C", # dark green
           "proactive" = "#6A3D9A", # dark purple

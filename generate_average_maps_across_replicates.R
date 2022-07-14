@@ -5,12 +5,13 @@ library(tidyr)
 library(dplyr)
 
 # Define scenarios folders and number of replicates
-mgmt.scenarios <- c("211129_proactive_rcp45") # Folder names with each scenario
+mgmt.scenarios <- c("211129_proactiveplus_rcp45",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 replicates <- c(1:5)
 
 ### SETUP
-di <- "G:/Mi unidad/proj_LANDIS/experiments/" # Path to simulations folder
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
 outputs_folder <- "211129_outputs/" # Subfolder for outputs
 
 times <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95)

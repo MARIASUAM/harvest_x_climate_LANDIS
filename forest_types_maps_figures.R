@@ -3,9 +3,24 @@
 library(raster)
 library(rasterVis)
 library(ggplot2)
+library(dplyr)
 
 ### NAME OF SCENARIOS ####
-mgmt.scenarios <- c(...) # Folder names with each scenario
+mgmt.scenarios <- c("211129_nomanag_current",
+                    "211129_nomanag_rcp45",
+                    "211129_nomanag_rcp85",
+                    
+                    "211129_conserv_current",
+                    "211129_conserv_rcp45",
+                    "211129_conserv_rcp85",
+                    
+                    "211129_proactive_current",
+                    "211129_proactive_rcp45",
+                    "211129_proactive_rcp85",
+                    
+                    "211129_proactiveplus_current",
+                    "211129_proactiveplus_rcp45",
+                    "211129_proactiveplus_rcp85") # Folder names with each scenario
 
 ### SETUP ###
 di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
@@ -68,3 +83,15 @@ gplot(rep_stack) +
   xlab("")
 dev.off()
 
+# forest type cover at initial conditions
+
+df <- data.frame(Forest_type = temp[]) %>%
+  group_by(Forest_type) %>%
+  summarise(count = n()) %>%
+  filter(is.na(Forest_type) == FALSE)
+
+total <- sum(df$count)  
+
+percentages <- df %>%
+  mutate(Percentage = count * 100 / total,
+         Forest = c("Pure pines", "Mixed pine-dom.", "Pure oaks", "Mixed oak-dom.","Shrublands","Mixed no dom.","Empty"))

@@ -6,6 +6,10 @@ library(tidyverse)
 
 di <- "/Users/maria.suarez.munoz/Google Drive/proj_LANDIS/experiments/"
 
+# Add climate regions names
+Clim_regions <- data.frame(clim_region = c(1:4),
+                           Climate_area = c('Subhumid', 'Xeric', 'Mesic', 'Alpine'))
+
 ## Check original vs bias-corrected data
 # Load bias-corrected data
 data <- read.table(paste0(di, "data/climate/data_biascorrected2.txt"), sep = ";", header = TRUE) %>%
@@ -115,15 +119,16 @@ avg <- merged %>%
   dplyr::select(-Year) %>%
   group_by(Month, clim_region) %>%
   summarise_all(mean, na.rm = TRUE) %>%
-  gather(Variable, Value, OBS_monthly_prec:MOD_MIROC5)
+  gather(Variable, Value, OBS_monthly_prec:MOD_MIROC5) %>%
+  left_join(Clim_regions)
 
-jpeg(file = "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/harvest_x_climate_LANDIS/images/prec_post-correction_2.jpeg", 
+jpeg(file = "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/harvest_x_climate_LANDIS/images/prec_post-correction_2_revised.jpeg", 
      width=8, height=6, units="in", res=300)
 ggplot(avg, aes(x = Month, y = Value, colour = Variable)) +
   geom_line(aes(linetype = Variable, color = Variable)) +
   geom_point(size = 0.4) +
   theme_classic() +
-  facet_wrap(clim_region ~ .) +
+  facet_wrap(Climate_area ~ .) +
   theme(legend.position = "bottom", legend.title = element_blank()) +
   scale_x_discrete("Month", limits = c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")) +
   scale_y_continuous("Monthly precipitation (mm)") +

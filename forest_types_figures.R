@@ -47,6 +47,7 @@ ft %>%
         axis.title = element_text(size = 24),
         axis.text = element_text(size = 24),
         legend.text = element_text(size = 19)) +
+  guides(color = guide_legend(nrow = 2)) +
   scale_colour_manual(name = "",
                       values = cols, labels=c('Non-management', 'Conservative', 'Proactive', 'Proactive-plus')) +
   scale_fill_manual(name = "",

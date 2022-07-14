@@ -4,7 +4,7 @@
 library(raster)
 library(dplyr)
 
-di <- ".../experiments/" # Path to simulations folder
+di <- "/Volumes/GoogleDrive/My Drive/proj_LANDIS/experiments/" # Path to simulations folder
 
 all_spp <- c("ppinaster", "pnigra", "phalepensis", "psylvestris", "qilex", "qfaginea", "qpyrenaica", "jcommunis", "joxycedrus", "tall", "medium", "short", "popnigra")
 pines_and_oaks <- c("ppinaster", "pnigra", "phalepensis", "psylvestris", "qilex", "qfaginea", "qpyrenaica")
@@ -18,7 +18,19 @@ dec_times_no0 <- c(10, 20, 30, 40, 50, 60, 70, 80, 90)
 months_ch <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 
 # Management scenarios
-mgmt.scenarios <- c(...) # Folder names with each replicate
+mgmt.scenarios <- c(
+                    # "211129_conserv_current_rep2",
+                    # "211129_conserv_rcp45_rep2",
+                    # "211129_conserv_rcp85_rep2",
+                    # "211129_nomanag_current_rep2",
+                    # "211129_nomanag_rcp45_rep2",
+                    # "211129_nomanag_rcp85_rep2",
+                    # "211129_proactive_current_rep2",
+                    # "211129_proactive_rcp45_rep2",
+                    "211129_proactive_rcp85_rep2") #,
+                    # "211129_proactiveplus_current_rep2",
+                    # "211129_proactiveplus_rcp45_rep2",
+                    # "211129_proactiveplus_rcp85_rep2") # Folder names with each replicate
                   
 ### PINE PLANTATIONS MASKS
 dense_pines_mask <- raster(paste(di, "data/dense_pines_mask.img", sep = ""))
@@ -132,6 +144,25 @@ for (i in 1:length(mgmt.scenarios)) {
     }
   }
   write.table(mort_dense_pines_df, paste(di, mgmt.scenarios[i], "/results/aggregated_diff_cohorts.txt", sep = ""))
+}
+
+### MORTALITY revised
+for (i in 1:length(mgmt.scenarios)) {
+  mort_dense_pines_df <- data.frame()
+  for (j in 1:length(times_no0)) {
+    for (h in 1:length(pines_and_oaks)) {
+      temp <- raster(paste(di, mgmt.scenarios[i], "/results/", pines_and_oaks[h], "_diff_cohorts_", times_no0[j], "_revised.asc", sep = ""))
+      # check: there cannot be negative values
+      ifelse(cellStats(temp, min) >= 0, "ok", print(paste0("NOT OK! Check mgmt.scenarios ", i, " times_no0 ", j, " pines_and_oaks ", h)))
+
+      temp_dense_pines_masked <- mask(temp, dense_pines_mask) # Mask by pine plantations
+
+      mort_dense_pines_df <- rbind(mort_dense_pines_df,
+                                   data.frame(Scenario = mgmt.scenarios[i], Time = times_no0[j], Species = pines_and_oaks[h],
+                                              Total_dead_cohorts = cellStats(temp_dense_pines_masked, sum, na.rm=TRUE)))
+    }
+  }
+  write.table(mort_dense_pines_df, paste(di, mgmt.scenarios[i], "/results/aggregated_diff_cohorts_revised.txt", sep = ""))
 }
 
 ##### Other outputs
