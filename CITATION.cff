@@ -1,0 +1,9 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: María
+    given-names: Suárez-Muñoz
+    orcid: https://orcid.org/0000-0003-1765-6885
+title: MARIASUAM/harvest_x_climate_LANDIS: v1.1
+version: v1.1
+date-released: 2022-09-14
